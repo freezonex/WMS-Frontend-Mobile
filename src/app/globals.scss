@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  touch-action: manipulation;
+}
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: #F4F4F4;
+  --background-end-rgb: 255, 255, 255;
+  --background-color:#fff
+  --border-radius:0px;
+  font-family: "IBM Plex Sans,system-ui,-apple-system,BlinkMacSystemFont,\.SFNSText-Regular,sans-serif";
+  
+
+}
+:root:root{
+  --adm-font-size-main:var(--adm-font-size-6);
+  font-family: "IBM Plex Sans,system-ui,-apple-system,BlinkMacSystemFont,\.SFNSText-Regular,sans-serif";
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: #F4F4F4;
+    --background-end-rgb: 0, 0, 0;
+    --background-color:#fff
+    --border-radius:0px;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: var(--background-start-rgb);
+  font-size: 14px;
+  font-family: "IBM Plex Sans,system-ui,-apple-system,BlinkMacSystemFont,\.SFNSText-Regular,sans-serif";
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

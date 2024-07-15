@@ -1,0 +1,99 @@
+:root:root {
+  touch-action: none;
+
+  [class^="adm"] {
+    border-radius: 0;
+  }
+  .adm-action-sheet-popup {
+    .adm-popup-body-position-bottom {
+      border-radius: 6px !important;
+    }
+  }
+
+  .adm-toast-icon {
+    display: flex;
+    justify-content: center;
+  }
+  .adm-button {
+    --border-radius: 0px !important;
+  }
+
+  .cus-input {
+    margin-top: 15px;
+    .name {
+      padding: 0 0 8px 0;
+    }
+    .adm-input {
+      .adm-input-element {
+        height: 32px;
+        padding: 7px 16px;
+        border-bottom: 1px solid;
+      }
+    }
+  }
+
+  .adm-search-bar {
+    .adm-search-bar-input-box {
+      border-radius: 0 !important;
+    }
+  }
+}
+
+/**
+custom css
+*/
+.topbar {
+  background: #fff;
+  border-bottom: 2px solid #ddd;
+  height: 48px;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 15px;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  z-index: 999;
+  .title {
+    font-size: 16px;
+  }
+}
+.m {
+  adm-mask {
+    margin-top: 48px;
+  }
+}
+
+select {
+  border-radius: 0;
+  min-width: 100px;
+  height: 30px;
+  border: none;
+  background: white;
+  border-bottom: 2px solid #ccc;
+  :focus {
+    border: 1px solid blue;
+  }
+  option {
+    border: none;
+  }
+}
+
+.menu-list {
+  .adm-list-item-content-main {
+    line-height: 10px;
+  }
+  .no-bottom-border {
+    .adm-list-item-content {
+      border: none !important;
+    }
+  }
+}
+.container {
+  position: fixed;
+  top: 48px;
+  bottom: 0px;
+  width: 100%;
+  overflow: auto;
+}
