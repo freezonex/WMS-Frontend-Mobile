@@ -7,8 +7,8 @@ export async function updateInboundRecord(body: object) {
   return post("/wms/inbound/update", body);
 }
 
-export async function fetchInbound(params: object) {
-  return post("/wms/inbound/get", {}, params);
+export async function fetchInbound(body:object, params: object) {
+  return post("/wms/inbound/get", body, params);
 }
 
 // export async function fetchTodayInbound(params) {

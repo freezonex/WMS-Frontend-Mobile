@@ -48,9 +48,6 @@ export default function Material() {
     await loadData();
     pageNum.current += 1;
   };
-  const handleCardOperation = (id: string) => {
-    console.log(id);
-  };
 
   return (
     <>
@@ -98,7 +95,6 @@ export default function Material() {
                     <WmsCard
                       key={index}
                       title={"Material Code :" + item.material_code}
-                      callback={() => {}}
                     >
                       <CardItem
                         name="Material Name"

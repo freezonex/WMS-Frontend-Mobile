@@ -1,0 +1,16 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/inbound/materials/[id]/page": "app/inbound/materials/[id]/page.js",
+  "/auditing/page": "app/auditing/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/material/page": "app/material/page.js",
+  "/inbound/create/page": "app/inbound/create/page.js",
+  "/inbound/page": "app/inbound/page.js",
+  "/warehouse/edit/[id]/page": "app/warehouse/edit/[id]/page.js",
+  "/page": "app/page.js",
+  "/warehouse/locations/[...slug]/page": "app/warehouse/locations/[...slug]/page.js",
+  "/warehouse/locations/add-location/[whid]/page": "app/warehouse/locations/add-location/[whid]/page.js",
+  "/outbound/page": "app/outbound/page.js",
+  "/warehouse/page": "app/warehouse/page.js",
+  "/warehouse/create/page": "app/warehouse/create/page.js"
+}

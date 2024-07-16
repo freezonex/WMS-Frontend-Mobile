@@ -1,15 +1,24 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { SearchBar, PullToRefresh, InfiniteScroll } from "antd-mobile";
+import {
+  SearchBar,
+  PullToRefresh,
+  InfiniteScroll,
+  Dialog,
+  Toast,
+} from "antd-mobile";
 import PageHeader from "../components/page-header/page-header";
 import { IPaginated } from "@/interface/IPaginated";
 import { DateTimeFormat, PageSize } from "@/utils/constant";
 import WmsCard from "../components/wms-card/wms-card";
 import CardItem from "../components/wms-card/card-item";
-import { fetchInbound } from "@/actions/inbound";
+import { deleteInbound, fetchInbound } from "@/actions/inbound";
 import moment from "moment";
+import IconButton from "../components/icon-button/icon-button";
+import { useRouter } from "next/navigation";
 
 export default function Inbound() {
+  const router = useRouter();
   const [datas, setDatas] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageNum, setPageNum] = useState(1);
@@ -24,7 +33,7 @@ export default function Inbound() {
       setHasMore(true);
     }
     try {
-      const res = (await fetchInbound(pageParams)) as any;
+      const res = (await fetchInbound({}, pageParams)) as any;
       if (res.data) {
         if (!res.data.hasNextPage) {
           setHasMore(false);
@@ -47,10 +56,38 @@ export default function Inbound() {
   const handleLoadMore = async () => {
     return await loadData();
   };
-  const handleCardOperation = (id: string) => {
-    console.log(id);
+
+  const handleCreate = () => {
+    router.push("/inbound/create");
   };
 
+  const handleDelete = (id: string) => {
+    Dialog.confirm({
+      content: "Are you sure to delete?",
+      confirmText: "Confirm",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        delInbound(id);
+      },
+    });
+  };
+
+  const delInbound = (id: string) => {
+    deleteInbound({ id: id })
+      .then((res: any) => {
+        Toast.show({
+          icon: "success",
+          content: "Successfully",
+        });
+        loadData();
+      })
+      .catch((e) => {
+        Toast.show({
+          icon: "fail",
+          content: e,
+        });
+      });
+  };
   return (
     <>
       <PullToRefresh
@@ -62,7 +99,12 @@ export default function Inbound() {
         <PageHeader
           title="Inbound"
           subTitle="Log new inventory arrivals quickly"
-        ></PageHeader>
+        >
+          <IconButton
+            text="Create Inbound List"
+            onClick={handleCreate}
+          ></IconButton>
+        </PageHeader>
 
         <div className="p-4">
           <div className="flex flex-row justify-between">
@@ -94,6 +136,8 @@ export default function Inbound() {
                     <WmsCard
                       key={index}
                       title={"Inbound ID:" + item.id}
+                      hasDelete={true}
+                      onDelete={() => handleDelete(item.id)}
                     >
                       <CardItem
                         name="Purchase Order No."

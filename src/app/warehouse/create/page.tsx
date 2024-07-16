@@ -27,13 +27,6 @@ export default function CreateWarehouse() {
   };
 
   const handleSave = () => {
-    const newValidation = {
-      nameInvalid: !formValue.name || formValue.name === "",
-      warehouseIdInvalid:
-        !formValue.warehouse_id || formValue.warehouse_id === "",
-      typeInvalid: !formValue.type || formValue.type === "",
-    };
-
     console.log(formValue);
     AddWarehouses(formValue)
       .then((res) => {
