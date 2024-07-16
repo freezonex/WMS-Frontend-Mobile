@@ -13,10 +13,11 @@ html {
   --background-color:#fff
   --border-radius:0px;
   font-family: "IBM Plex Sans,system-ui,-apple-system,BlinkMacSystemFont,\.SFNSText-Regular,sans-serif";
-  
+  touch-action: none;
 
 }
 :root:root{
+  touch-action: none;
   --adm-font-size-main:var(--adm-font-size-6);
   font-family: "IBM Plex Sans,system-ui,-apple-system,BlinkMacSystemFont,\.SFNSText-Regular,sans-serif";
 }

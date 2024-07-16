@@ -41,6 +41,7 @@ export default function WarehouseLocations({ params }: IParams) {
         console.log(res);
       }
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDelete = (id: string) => {
@@ -115,7 +116,7 @@ export default function WarehouseLocations({ params }: IParams) {
                       ></CardItem>
                       <CardItem
                         name="Occupied"
-                        value={item.supplier}
+                        value={item.material_name ? "Yes" : "No"}
                       ></CardItem>
                       <CardItem
                         name="Material"

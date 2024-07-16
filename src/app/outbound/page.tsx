@@ -77,7 +77,7 @@ export default function Outbound() {
           subTitle="Process and track inventory dispatches"
         >
           <IconButton
-            text="Create Auditing Order"
+            text="Create a Outbound List"
             onClick={handleCreate}
           ></IconButton>
         </PageHeader>

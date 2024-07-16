@@ -97,7 +97,6 @@ export default function Auditing() {
                     <WmsCard
                       key={index}
                       title={`Operation : ${item.id}`}
-                      callback={() => {}}
                     >
                       <CardItem name="Type" value={item.type}></CardItem>
                       <CardItem

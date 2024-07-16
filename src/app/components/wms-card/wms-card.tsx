@@ -21,7 +21,7 @@ export default function WmsCard({
   onEdit,
   onDelete,
 }: IWmsCardProps) {
-  const actions: Action[] = [
+  const allActions: Action[] = [
     {
       key: "edit",
       text: "Edit",
@@ -45,6 +45,7 @@ export default function WmsCard({
       },
     },
   ];
+  const actions = allActions.filter((t) => !t.disabled);
   const [visible, setVisible] = useState(false);
 
   return (
@@ -52,11 +53,13 @@ export default function WmsCard({
       <div className="flex flex-row items-center justify-between h-[34px] p-2 text-[14px]  font-semibold bg-[#C6C6C6]">
         <div>{title}</div>
         <div>
-          <OverflowMenuVertical
-            onClick={() => {
-              setVisible(true);
-            }}
-          />
+          {actions.length > 0 && (
+            <OverflowMenuVertical
+              onClick={() => {
+                setVisible(true);
+              }}
+            />
+          )}
         </div>
       </div>
       <div className="p-4 bg-white">{children}</div>
@@ -64,6 +67,8 @@ export default function WmsCard({
         visible={visible}
         actions={actions}
         closeOnAction={true}
+        extra="Please select your operation"
+        cancelText="Cancel"
         onClose={() => setVisible(false)}
       />
     </div>

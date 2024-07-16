@@ -94,7 +94,6 @@ export default function Inbound() {
                     <WmsCard
                       key={index}
                       title={"Inbound ID:" + item.id}
-                      callback={() => {}}
                     >
                       <CardItem
                         name="Purchase Order No."

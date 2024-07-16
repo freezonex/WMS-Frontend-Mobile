@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@carbon/icons-react": "^11.45.0",
-    "@ionic/react": "^8.2.5",
     "antd-mobile": "^5.37.1",
     "antd-mobile-icons": "^0.3.0",
     "autoprefixer": "^10.4.19",
