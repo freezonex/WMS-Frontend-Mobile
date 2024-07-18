@@ -37,7 +37,7 @@ export default function Outbound() {
       setHasMore(true);
     }
     try {
-      const res = (await fetchOutbound(pageParams)) as any;
+      const res = (await fetchOutbound({},pageParams)) as any;
       if (res.data) {
         if (!res.data.hasNextPage) {
           setHasMore(false);
@@ -59,9 +59,6 @@ export default function Outbound() {
   };
   const handleLoadMore = async () => {
     return await loadData();
-  };
-  const handleCardOperation = (id: string) => {
-    console.log(id);
   };
 
   return (

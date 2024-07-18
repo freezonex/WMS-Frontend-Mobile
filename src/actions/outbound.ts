@@ -5,8 +5,8 @@ export async function addOutboundRecord(body: object) {
   return post("/wms/outbound/add", body);
 }
 
-export async function fetchOutbound(params: object) {
-  return post("/wms/outbound/get", {}, params);
+export async function fetchOutbound(body:object,params: object) {
+  return post("/wms/outbound/get", body, params);
 }
 
 export async function fetchTodayOutbound(params: object) {

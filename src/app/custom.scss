@@ -25,13 +25,16 @@
     }
     .adm-input {
       .adm-input-element {
-        height: 32px;
+        height: 40px;
         padding: 7px 16px;
-        border-bottom: 1px solid;
+        border-bottom: 1px solid #8d8d8d;
+      }
+      input:focus {
+        outline: 2px solid var(--cds-focus, #0f62fe);
+        outline-offset: -2px;
       }
     }
   }
-
   .adm-search-bar {
     .adm-search-bar-input-box {
       border-radius: 0 !important;

@@ -1,64 +1,113 @@
 "use client";
-import CusInput from "@/app/components/cus-input/cus-input";
 import PageHeader from "@/app/components/page-header/page-header";
-import { Button, Toast } from "antd-mobile";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import InboundNextCard from "./_components/add-material";
+import AddInboundCard from "./_components/add-inbound";
+import { IMaterialDetail } from "@/interface/viewmode/inbound";
+import { Toast } from "antd-mobile";
+import { addInboundRecord } from "@/actions/inbound";
+interface IFormValue {
+  creator: string;
+  purchase_order_no: string;
+  supplier: string;
+  delivery_date: Date;
+  status: string;
+}
 
 export default function CreateInbound() {
   const router = useRouter();
-  const [formValue, setFormValues] = useState({
-    name: "",
-    warehouse_id: "",
-    type: "",
-    manager: "",
-    department: "",
-    email: "",
-    project_group: "",
-    note: "",
+  const [formValue, setFormValues] = useState<IFormValue>({
+    creator: "",
+    purchase_order_no: "",
+    supplier: "",
+    delivery_date: new Date(),
+    status: "",
   });
+  const [details, setDetails] = useState<IMaterialDetail[]>([]);
+  const [showNext, setShowNext] = useState(false);
 
-  const handlerSetFormValues = (val: any, id: string) => {
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [id]: val,
-    }));
+  const validateFormValue = () => {
+    let saveFlag = true;
+    if (!formValue.creator) {
+      Toast.show("Creator required.");
+      saveFlag = false;
+    }
+    if (!formValue.purchase_order_no) {
+      Toast.show("Purchase Order No. required.");
+      saveFlag = false;
+    }
+    if (!formValue.supplier) {
+      Toast.show("Supplier required.");
+      saveFlag = false;
+    }
+    if (!formValue.delivery_date) {
+      Toast.show("Delivery Date required.");
+      saveFlag = false;
+    }
+    return saveFlag;
   };
+  const handleSave = (datas: IMaterialDetail[]) => {
+    let saveFlag = validateFormValue();
 
-  const handleSave = () => {
-    console.log(formValue);
-    // AddWarehouses(formValue)
-    //   .then((res) => {
-    //     setFormValues({
-    //       name: "",
-    //       warehouse_id: "",
-    //       type: "",
-    //       manager: "",
-    //       department: "",
-    //       email: "",
-    //       project_group: "",
-    //       note: "",
-    //     });
-    //     Toast.show({
-    //       icon: "success",
-    //       content: "Successfully",
-    //     });
-    //     router.push("/warehouse");
-    //   })
-    //   .catch((e) => {
-    //     Toast.show({
-    //       icon: "fail",
-    //       content: e,
-    //     });
-    //   });
+    datas.forEach((t) => {
+      if (!t.material_code) {
+        Toast.show("Material Code required.");
+        saveFlag = false;
+      }
+      if (!t.quantity) {
+        Toast.show("Quantity required.");
+        saveFlag = false;
+      }
+    });
+    if (!saveFlag) {
+      return;
+    }
+    let body = {
+      ...formValue,
+      source: "manual",
+      details: convertTaskListDatas(datas),
+    };
+    addInboundRecord(body)
+      .then(() => {
+        Toast.show({
+          icon: "success",
+          content: "Successfully",
+        });
+        router.back();
+      })
+      .catch((e) => {
+        Toast.show({
+          icon: "fail",
+          content: e,
+        });
+      });
+    console.log("save", datas, formValue);
   };
-  const handleNext=()=>{
-
-  }
+  const convertTaskListDatas = (materials: IMaterialDetail[]) => {
+    const shelfRecords = materials.map((task) => {
+      return {
+        material_id: task.id,
+        material_name: task.name,
+        operation_id: "",
+        rf_id: "",
+        stock_quantity: 0,
+        quantity: task.quantity,
+        location_id: task.suggested_storage_location_id,
+      };
+    });
+    return shelfRecords;
+  };
+  const handleNext = () => {
+    let saveFlag = validateFormValue();
+    if (!saveFlag) {
+      return;
+    }
+    setShowNext(true);
+  };
   const handleCancel = () => {
     router.back();
   };
-
   return (
     <>
       <div>
@@ -69,47 +118,22 @@ export default function CreateInbound() {
         <div className="p-4">
           <p className=" font-normal text-[20px]">Create a Inbound List</p>
           <div></div>
-          <div>
-            <CusInput
-              id="name"
-              name="Name"
-              value={formValue.name}
-              setValue={handlerSetFormValues}
-            ></CusInput>
-            <CusInput
-              id="warehouse_id"
-              name="Warehouse ID"
-              value={formValue.warehouse_id}
-              setValue={handlerSetFormValues}
-            ></CusInput>
-            <CusInput
-              id="type"
-              name="Type"
-              value={formValue.type}
-              setValue={handlerSetFormValues}
-            ></CusInput>
-            <CusInput
-              id="manager"
-              name="Manager"
-              value={formValue.manager}
-              setValue={handlerSetFormValues}
-            ></CusInput>
-            <CusInput
-              id="project_group"
-              name="Project Group"
-              value={formValue.project_group}
-              setValue={handlerSetFormValues}
-            ></CusInput>
-          </div>
-
-          <div className="mt-6 flex flex-row justify-center gap-4 pb-8">
-            <Button color="primary" onClick={handleNext}>
-              Next
-            </Button>
-            <Button color="primary" fill="outline" onClick={handleCancel}>
-              Cancel
-            </Button>
-          </div>
+          {!showNext && (
+            <AddInboundCard
+              formValue={formValue}
+              setFormValues={setFormValues}
+              onNext={handleNext}
+              onCancel={handleCancel}
+            ></AddInboundCard>
+          )}
+          {showNext && (
+            <InboundNextCard
+              details={details}
+              setDetails={setDetails}
+              onBack={() => setShowNext(false)}
+              onSave={handleSave}
+            ></InboundNextCard>
+          )}
         </div>
       </div>
     </>

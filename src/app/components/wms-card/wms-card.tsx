@@ -7,7 +7,7 @@ import { useState } from "react";
 
 interface IWmsCardProps {
   title: string;
-  children: React.ReactElement[];
+  children: React.ReactElement|React.ReactElement[];
   onEdit?: Function;
   onDelete?: Function;
   hasEdit?: boolean;
