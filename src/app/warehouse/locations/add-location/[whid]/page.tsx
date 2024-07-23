@@ -19,7 +19,7 @@ export default function CreateLocation({ params }: IParams) {
     quantity: "",
   });
 
-  const handlerSetFormValues = (val: any, id: string) => {
+  const handleSetFormValues = (val: any, id: string) => {
     setFormValues((prevValues) => ({
       ...prevValues,
       [id]: val,
@@ -73,19 +73,19 @@ export default function CreateLocation({ params }: IParams) {
               id="name"
               name="Name"
               value={formValue.name}
-              setValue={handlerSetFormValues}
+              setValue={handleSetFormValues}
             ></CusInput>
             <CusInput
               id="material"
               name="Material"
               value={formValue.material}
-              setValue={handlerSetFormValues}
+              setValue={handleSetFormValues}
             ></CusInput>
             <CusInput
               id="quantity"
               name="Quantity"
               value={formValue.quantity}
-              setValue={handlerSetFormValues}
+              setValue={handleSetFormValues}
             ></CusInput>
           </div>
 

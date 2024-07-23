@@ -2,7 +2,7 @@ import CusDatePicker from "@/app/components/cus-date-picker/cus-date-picker";
 import CusInput from "@/app/components/cus-input/cus-input";
 import { Button } from "antd-mobile";
 
-export default function AddInboundCard({
+export default function AddOutboundCard({
   formValue,
   setFormValues,
   onNext,

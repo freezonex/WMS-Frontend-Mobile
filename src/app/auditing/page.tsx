@@ -9,6 +9,7 @@ import CardItem from "../components/wms-card/card-item";
 import WmsCard from "../components/wms-card/wms-card";
 import moment from "moment";
 import { fetchStocktaking } from "@/actions/auditing";
+import Link from "next/link";
 
 export default function Auditing() {
   const [datas, setDatas] = useState<any[]>([]);
@@ -105,7 +106,7 @@ export default function Auditing() {
                       ></CardItem>
                       <CardItem name="Source" value={item.source}></CardItem>
                       <CardItem name="Result">
-                        <a href={`/auditing/detial/${item.id}`}>View Detail</a>
+                        <Link href={`/auditing/detial/${item.id}`}>View Detail</Link>
                       </CardItem>
                       <CardItem
                         name="Delivery date"

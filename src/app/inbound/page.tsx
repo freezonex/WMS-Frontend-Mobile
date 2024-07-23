@@ -16,6 +16,7 @@ import { deleteInbound, fetchInbound } from "@/actions/inbound";
 import moment from "moment";
 import IconButton from "../components/icon-button/icon-button";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Inbound() {
   const router = useRouter();
@@ -152,9 +153,9 @@ export default function Inbound() {
                         value={item.operator}
                       ></CardItem>
                       <CardItem name="Material">
-                        <a href={`/inbound/materials/${item.id}`}>
+                        <Link href={`/inbound/materials/${item.id}`}>
                           All Material
-                        </a>
+                        </Link>
                       </CardItem>
                       <CardItem
                         name="Delivery Date"

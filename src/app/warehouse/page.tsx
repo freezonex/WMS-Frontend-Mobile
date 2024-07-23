@@ -23,6 +23,7 @@ import IconButton from "../components/icon-button/icon-button";
 import { PageSize } from "@/utils/constant";
 import { useRouter } from "next/navigation";
 import { IPaginated } from "@/interface/IPaginated";
+import Link from "next/link";
 
 export default function Warehouse() {
   const router = useRouter();
@@ -170,9 +171,9 @@ export default function Warehouse() {
                       <CardItem name="Email" value={item.email}></CardItem>
                       <CardItem name="Storage Location">
                         <div>
-                          <a href={`/warehouse/locations/${item.id}/${item.warehouse_id}/${item.name}`}>
+                          <Link href={`/warehouse/locations/${item.id}/${item.warehouse_id}/${item.name}`}>
                             All Location
-                          </a>
+                          </Link>
                         </div>
                       </CardItem>
                     </WmsCard>

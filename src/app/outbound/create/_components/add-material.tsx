@@ -16,7 +16,7 @@ interface IProps {
   ) => void | Promise<void>;
   onSave: (datas: IMaterialDetail[]) => void | Promise<void>;
 }
-export default function InboundNextCard({ onBack, onSave }: IProps) {
+export default function OutboundNextCard({ onBack, onSave }: IProps) {
   const defaultDetail: IMaterialDetail = {
     id: "",
     name: "",
@@ -129,7 +129,7 @@ export default function InboundNextCard({ onBack, onSave }: IProps) {
       setDetails(details.filter((_, index) => index != id));
     }
   };
-  const handleAddInboundMaterial = () => {
+  const handleAddOutboundMaterial = () => {
     setDetails([...details, defaultDetail]);
   };
 
@@ -253,7 +253,7 @@ export default function InboundNextCard({ onBack, onSave }: IProps) {
             })}
         </div>
       </div>
-      <Button className="mt-4 w-[100%] h-14" onClick={handleAddInboundMaterial}>
+      <Button className="mt-4 w-[100%] h-14" onClick={handleAddOutboundMaterial}>
         <div className="flex flex-row items-center justify-center">
           <AddCircleOutline fontSize={48} color="#ccc"></AddCircleOutline>
         </div>

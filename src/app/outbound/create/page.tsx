@@ -2,11 +2,11 @@
 import PageHeader from "@/app/components/page-header/page-header";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import InboundNextCard from "./_components/add-material";
-import AddInboundCard from "./_components/add-inbound";
 import { IMaterialDetail } from "@/interface/viewmode/inbound";
 import { Toast } from "antd-mobile";
-import { addInboundRecord } from "@/actions/inbound";
+import AddOutboundCard from "./_components/add-outbound";
+import OutboundNextCard from "./_components/add-material";
+import { addOutboundRecord } from "@/actions/outbound";
 interface IFormValue {
   creator: string;
   purchase_order_no: string;
@@ -15,7 +15,7 @@ interface IFormValue {
   status: string;
 }
 
-export default function CreateInbound() {
+export default function CreateOutbound() {
   const router = useRouter();
   const [formValue, setFormValues] = useState<IFormValue>({
     creator: "",
@@ -24,7 +24,7 @@ export default function CreateInbound() {
     delivery_date: new Date(),
     status: "",
   });
-  
+
   const [showNext, setShowNext] = useState(false);
 
   const validateFormValue = () => {
@@ -68,7 +68,7 @@ export default function CreateInbound() {
       source: "manual",
       details: convertTaskListDatas(datas),
     };
-    addInboundRecord(body)
+    addOutboundRecord(body)
       .then(() => {
         Toast.show({
           icon: "success",
@@ -112,25 +112,25 @@ export default function CreateInbound() {
     <>
       <div>
         <PageHeader
-          title="Inbound"
-          subTitle="Log new inventory arrivals quickly"
+          title="Outbound"
+          subTitle="Process and track inventory dispatches"
         ></PageHeader>
         <div className="p-4">
-          <p className=" font-normal text-[20px]">Create a Inbound List</p>
+          <p className=" font-normal text-[20px]">Create a Outbound List</p>
           <div></div>
           {!showNext && (
-            <AddInboundCard
+            <AddOutboundCard
               formValue={formValue}
               setFormValues={setFormValues}
               onNext={handleNext}
               onCancel={handleCancel}
-            ></AddInboundCard>
+            ></AddOutboundCard>
           )}
           {showNext && (
-            <InboundNextCard
+            <OutboundNextCard
               onBack={() => setShowNext(false)}
               onSave={handleSave}
-            ></InboundNextCard>
+            ></OutboundNextCard>
           )}
         </div>
       </div>

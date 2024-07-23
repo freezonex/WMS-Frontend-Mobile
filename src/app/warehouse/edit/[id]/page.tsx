@@ -49,7 +49,7 @@ export default function EditWarehouse({ params }: IParams) {
       });
   }, [params]);
 
-  const handlerSetFormValues = (val: any, id: string) => {
+  const handleSetFormValues = (val: any, id: string) => {
     setFormValues((prevValues) => ({
       ...prevValues,
       [id]: val,
@@ -92,49 +92,49 @@ export default function EditWarehouse({ params }: IParams) {
             id="name"
             name="Name"
             value={formValue.name}
-            setValue={handlerSetFormValues}
+            setValue={handleSetFormValues}
           ></CusInput>
           <CusInput
             id="warehouse_id"
             name="Warehouse ID"
             value={formValue.warehouse_id}
-            setValue={handlerSetFormValues}
+            setValue={handleSetFormValues}
           ></CusInput>
           <CusInput
             id="type"
             name="Type"
             value={formValue.type}
-            setValue={handlerSetFormValues}
+            setValue={handleSetFormValues}
           ></CusInput>
           <CusInput
             id="manager"
             name="Manager"
             value={formValue.manager}
-            setValue={handlerSetFormValues}
+            setValue={handleSetFormValues}
           ></CusInput>
           <CusInput
             id="project_group"
             name="Project Group"
             value={formValue.project_group}
-            setValue={handlerSetFormValues}
+            setValue={handleSetFormValues}
           ></CusInput>{" "}
           <CusInput
             id="department"
             name="Department"
             value={formValue.department}
-            setValue={handlerSetFormValues}
+            setValue={handleSetFormValues}
           ></CusInput>
           <CusInput
             id="email"
             name="Email"
             value={formValue.email}
-            setValue={handlerSetFormValues}
+            setValue={handleSetFormValues}
           ></CusInput>
           <CusInput
             id="note"
             name="Note"
             value={formValue.note}
-            setValue={handlerSetFormValues}
+            setValue={handleSetFormValues}
           ></CusInput>
           <div className="mt-6 flex flex-row justify-center gap-4 pb-8">
             <Button color="primary" onClick={handleSave}>

@@ -8,24 +8,28 @@ import {
   SearchBar,
   InfiniteScroll,
   PullToRefresh,
+  Dialog,
+  Toast,
 } from "antd-mobile";
 import PageHeader from "../components/page-header/page-header";
 import IconButton from "../components/icon-button/icon-button";
-import { fetchMaterial } from "@/actions/material";
 import { IPaginated } from "@/interface/IPaginated";
 import { DateTimeFormat, PageSize } from "@/utils/constant";
 import CardItem from "../components/wms-card/card-item";
 import WmsCard from "../components/wms-card/wms-card";
-import { fetchOutbound } from "@/actions/outbound";
+import { deleteOutbound, fetchOutbound } from "@/actions/outbound";
 import moment from "moment";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Outbound() {
+  const router = useRouter();
   const [datas, setDatas] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageNum, setPageNum] = useState(1);
 
   const handleCreate = () => {
-    console.log("create");
+    router.push("outbound/create");
   };
   const loadData = async () => {
     const pageParams: IPaginated = {
@@ -37,7 +41,7 @@ export default function Outbound() {
       setHasMore(true);
     }
     try {
-      const res = (await fetchOutbound({},pageParams)) as any;
+      const res = (await fetchOutbound({}, pageParams)) as any;
       if (res.data) {
         if (!res.data.hasNextPage) {
           setHasMore(false);
@@ -60,7 +64,35 @@ export default function Outbound() {
   const handleLoadMore = async () => {
     return await loadData();
   };
-
+  const handleDelete = (id: string) => {
+    Dialog.confirm({
+      content: "Are you sure to delete?",
+      confirmText: "Confirm",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        delOutbound(id);
+      },
+    });
+  };
+  const delOutbound = (id: string) => {
+    deleteOutbound({ id: id })
+      .then((res: any) => {
+        Toast.show({
+          icon: "success",
+          content: "Successfully",
+        });
+        loadData();
+      })
+      .catch((e) => {
+        Toast.show({
+          icon: "fail",
+          content: e,
+        });
+      });
+  };
+  const handleOutbound=()=>{
+    console.log("outbound");
+  }
   return (
     <>
       <PullToRefresh
@@ -109,6 +141,8 @@ export default function Outbound() {
                     <WmsCard
                       key={index}
                       title={"Oubound ID :" + item.id}
+                      hasDelete={true}
+                      onDelete={() => handleDelete(item.id)}
                     >
                       <CardItem
                         name="Purchase Order No."
@@ -123,9 +157,9 @@ export default function Outbound() {
                         value={item.operator}
                       ></CardItem>
                       <CardItem name="Material">
-                        <a href={`/outbound/materials/${item.id}`}>
+                        <Link href={`/outbound/materials/${item.id}`}>
                           All Material
-                        </a>
+                        </Link>
                       </CardItem>
                       <CardItem
                         name="Delivery Date"
@@ -142,7 +176,8 @@ export default function Outbound() {
                       <CardItem name="Status" value={item.status}></CardItem>
                       <CardItem name="Notes" value={item.note}></CardItem>
                       <CardItem name="Operation">
-                        <Button size="mini" style={{ background: "#ddd" }}>
+                        <Button size="mini" style={{ background: "#ddd" }} 
+                        onClick={()=>handleOutbound(item.id)}>
                           Outbound
                         </Button>
                       </CardItem>
