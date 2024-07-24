@@ -6,13 +6,18 @@ import {
   InfiniteScroll,
   Dialog,
   Toast,
+  Button,
 } from "antd-mobile";
 import PageHeader from "../components/page-header/page-header";
 import { IPaginated } from "@/interface/IPaginated";
 import { DateTimeFormat, PageSize } from "@/utils/constant";
 import WmsCard from "../components/wms-card/wms-card";
 import CardItem from "../components/wms-card/card-item";
-import { deleteInbound, fetchInbound } from "@/actions/inbound";
+import {
+  deleteInbound,
+  fetchInbound,
+  updateInboundRecord,
+} from "@/actions/inbound";
 import moment from "moment";
 import IconButton from "../components/icon-button/icon-button";
 import { useRouter } from "next/navigation";
@@ -76,6 +81,27 @@ export default function Inbound() {
   const delInbound = (id: string) => {
     deleteInbound({ id: id })
       .then((res: any) => {
+        Toast.show({
+          icon: "success",
+          content: "Successfully",
+        });
+        loadData();
+      })
+      .catch((e) => {
+        Toast.show({
+          icon: "fail",
+          content: e,
+        });
+      });
+  };
+  const handleInbound = (id: string) => {
+    const data = {
+      source: "manual",
+      status: "done",
+      id,
+    };
+    updateInboundRecord(data)
+      .then(() => {
         Toast.show({
           icon: "success",
           content: "Successfully",
@@ -171,6 +197,15 @@ export default function Inbound() {
                       ></CardItem>
                       <CardItem name="Status" value={item.status}></CardItem>
                       <CardItem name="Notes" value={item.note}></CardItem>
+                      <CardItem name="Operation">
+                        <Button
+                          size="mini"
+                          style={{ background: "#ddd" }}
+                          onClick={() => handleInbound(item.id)}
+                        >
+                          Inbound
+                        </Button>
+                      </CardItem>
                     </WmsCard>
                   </div>
                 );

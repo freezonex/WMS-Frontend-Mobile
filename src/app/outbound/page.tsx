@@ -17,7 +17,11 @@ import { IPaginated } from "@/interface/IPaginated";
 import { DateTimeFormat, PageSize } from "@/utils/constant";
 import CardItem from "../components/wms-card/card-item";
 import WmsCard from "../components/wms-card/wms-card";
-import { deleteOutbound, fetchOutbound } from "@/actions/outbound";
+import {
+  deleteOutbound,
+  fetchOutbound,
+  updateOutboundRecord,
+} from "@/actions/outbound";
 import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -90,9 +94,27 @@ export default function Outbound() {
         });
       });
   };
-  const handleOutbound=()=>{
-    console.log("outbound");
-  }
+  const handleOutbound = (id: string) => {
+    const data = {
+      source: "manual",
+      status: "done",
+      id,
+    };
+    updateOutboundRecord(data)
+      .then(() => {
+        Toast.show({
+          icon: "success",
+          content: "Successfully",
+        });
+        loadData();
+      })
+      .catch((e) => {
+        Toast.show({
+          icon: "fail",
+          content: e,
+        });
+      });
+  };
   return (
     <>
       <PullToRefresh
@@ -176,8 +198,11 @@ export default function Outbound() {
                       <CardItem name="Status" value={item.status}></CardItem>
                       <CardItem name="Notes" value={item.note}></CardItem>
                       <CardItem name="Operation">
-                        <Button size="mini" style={{ background: "#ddd" }} 
-                        onClick={()=>handleOutbound(item.id)}>
+                        <Button
+                          size="mini"
+                          style={{ background: "#ddd" }}
+                          onClick={() => handleOutbound(item.id)}
+                        >
                           Outbound
                         </Button>
                       </CardItem>

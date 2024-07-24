@@ -1,20 +1,40 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { InfiniteScroll, PullToRefresh, SearchBar } from "antd-mobile";
+import {
+  Button,
+  Dialog,
+  InfiniteScroll,
+  PullToRefresh,
+  SearchBar,
+  Toast,
+} from "antd-mobile";
 import PageHeader from "../components/page-header/page-header";
 import IconButton from "../components/icon-button/icon-button";
 import { IPaginated } from "@/interface/IPaginated";
-import { DateTimeFormat, PageSize } from "@/utils/constant";
+import {
+  DateTimeFormat,
+  operationStatuses,
+  PageSize,
+  stokingTypes,
+} from "@/utils/constant";
 import CardItem from "../components/wms-card/card-item";
 import WmsCard from "../components/wms-card/wms-card";
 import moment from "moment";
-import { fetchStocktaking } from "@/actions/auditing";
+import { deleteStocktaking, fetchStocktaking } from "@/actions/auditing";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Search } from "@carbon/icons-react";
 
 export default function Auditing() {
+  const router = useRouter();
+  const pageNum = useRef(1);
   const [datas, setDatas] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
-  const pageNum = useRef(1);
+  const [query, setQuery] = useState({
+    type: "",
+    status: "",
+    keyword: "",
+  });
 
   const loadData = async () => {
     const pageParams: IPaginated = {
@@ -26,7 +46,9 @@ export default function Auditing() {
       setHasMore(true);
     }
     try {
-      const res = (await fetchStocktaking({}, pageParams)) as any;
+      const res = (await fetchStocktaking({
+        ...query
+      }, pageParams)) as any;
       if (res.data) {
         if (!res.data.hasNextPage) {
           setHasMore(false);
@@ -50,10 +72,45 @@ export default function Auditing() {
     await loadData();
     pageNum.current += 1;
   };
-  const handleCardOperation = (id: string) => {
-    console.log(id);
-  };
 
+  const handleDelete = (id: string) => {
+    Dialog.confirm({
+      content: "Are you sure to delete?",
+      confirmText: "Confirm",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        auditingDelete(id);
+      },
+    });
+  };
+  const auditingDelete = (id: string) => {
+    deleteStocktaking({ id: id })
+      .then((res: any) => {
+        Toast.show({
+          icon: "success",
+          content: "Successfully",
+        });
+        loadData();
+      })
+      .catch((e) => {
+        Toast.show({
+          icon: "fail",
+          content: e,
+        });
+      });
+  };
+  const handleCreateAuditing = () => {
+    router.push("/auditing/create");
+  };
+  const handleQueryData = (field: string, val: string) => {
+    setQuery((prev) => ({
+      ...prev,
+      [field]: val,
+    }));
+  };
+  const handleSearch=()=>{
+    loadData();
+  }
   return (
     <>
       <PullToRefresh
@@ -66,28 +123,59 @@ export default function Auditing() {
           title="Auditing"
           subTitle="Verify and adjust inventory accuracy"
         >
-          <IconButton text="Create Auditing Order"></IconButton>
+          <IconButton
+            text="Create Auditing Order"
+            onClick={handleCreateAuditing}
+          ></IconButton>
         </PageHeader>
         <div className="p-4">
-          <div className="flex flex-row justify-between">
-            <select className="w-[50%] ml-2" onChange={() => {}}>
-              {/* <option value="Manager" disabled selected style={{ display: "none" }}>
-            Manager
-          </option> */}
-              <option value="test1">Material Type</option>
-              <option value="test2">test2</option>
-            </select>
+          <div className="flex flex-row gap-2">
+            <div className="flex-1">
+              <select
+                value={query.type}
+                onChange={(e) => handleQueryData("type", e.target.value)}
+              >
+                {stokingTypes.map((item, index) => (
+                  <option key={index} value={item.value}>
+                    {item.text}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex-1">
+              <select
+                value={query.status}
+                onChange={(e) => handleQueryData("status", e.target.value)}
+              >
+                {operationStatuses.map((item, index) => (
+                  <option key={index} value={item.value}>
+                    {item.text}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-          <SearchBar
-            className="mt-4"
-            placeholder="Material Code | Material Name"
-            style={{
-              "--border-radius": "100px",
-              "--background": "#ffffff",
-              "--height": "32px",
-              "--padding-left": "12px",
-            }}
-          />
+          <div className="flex flex-row gap-2 items-center mt-4">
+            <div className="flex-1">
+              <SearchBar
+                placeholder="Source"
+                value={query.keyword}
+                onChange={(val) => handleQueryData("keyword",val)}
+                onSearch={(val) => handleQueryData("keyword",val)}
+                style={{
+                  "--border-radius": "100px",
+                  "--background": "#ffffff",
+                  "--height": "32px",
+                  "--padding-left": "12px",
+                }}
+              />
+            </div>
+            <div className="w=[40px]">
+              <Button color="primary" size="small" onClick={handleSearch}>
+                <Search size={24}></Search>
+              </Button>
+            </div>
+          </div>
         </div>
         <div className="ml-4 mr-4">
           <div className="mb-4">
@@ -98,6 +186,8 @@ export default function Auditing() {
                     <WmsCard
                       key={index}
                       title={`Operation : ${item.id}`}
+                      hasDelete={true}
+                      onDelete={() => handleDelete(item.id)}
                     >
                       <CardItem name="Type" value={item.type}></CardItem>
                       <CardItem
@@ -106,7 +196,9 @@ export default function Auditing() {
                       ></CardItem>
                       <CardItem name="Source" value={item.source}></CardItem>
                       <CardItem name="Result">
-                        <Link href={`/auditing/detial/${item.id}`}>View Detail</Link>
+                        <Link href={`/auditing/detial/${item.id}`}>
+                          View Detail
+                        </Link>
                       </CardItem>
                       <CardItem
                         name="Delivery date"

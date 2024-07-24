@@ -10,6 +10,7 @@ interface ICusInput {
   styleInput?: CSSProperties | undefined;
   onBlur?: FocusEventHandler<HTMLElement>;
   refInput?: any;
+  type?: string;
 }
 export default function CusInput({
   id,
@@ -21,6 +22,7 @@ export default function CusInput({
   styleInput: stypeInput,
   onBlur,
   refInput,
+  type="text",
 }: ICusInput) {
   return (
     <div className="cus-input" style={styleWrapper}>
@@ -32,6 +34,7 @@ export default function CusInput({
           }}
           style={stypeInput}
           id={id}
+          type={type}
           placeholder={placeholder ? placeholder : name}
           value={value}
           onChange={(val) => setValue(val, id ? id : "")}
