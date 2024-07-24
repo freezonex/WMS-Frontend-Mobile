@@ -4,7 +4,7 @@ const nextConfig = {
     PATH_PREFIX: process.env.PATH_PREFIX,
     RUNTIME_IDC_NAME: process.env.RUNTIME_IDC_NAME,
   },
-  distDir: "dist",
+  // distDir: "dist",
 
   async rewrites() {
     let destination;
