@@ -1,39 +1,44 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { SearchBar, PullToRefresh, InfiniteScroll } from "antd-mobile";
+import { SearchBar, PullToRefresh, InfiniteScroll,  Dialog,Toast } from "antd-mobile";
 
 import WmsCard from "../components/wms-card/wms-card";
-import { fetchMaterial } from "@/actions/material";
+import { fetchMaterial,deleteMaterial } from "@/actions/material";
 import { IPaginated } from "@/interface/IPaginated";
 import CardItem from "../components/wms-card/card-item";
 import PageHeader from "../components/page-header/page-header";
 import IconButton from "../components/icon-button/icon-button";
 import { PageSize } from "@/utils/constant";
+import { useRouter } from "next/navigation";
+
 
 export default function Material() {
+  const router = useRouter();
   const [datas, setDatas] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
-  const pageNum = useRef(1);
+  const [pageNum, setPageNum] = useState(1);
 
   const loadData = async () => {
     const pageParams: IPaginated = {
-      pageNum: pageNum.current,
+      pageNum: pageNum,
       pageSize: PageSize,
     };
-    if (pageNum.current == 1) {
+    if (pageNum == 1) {
       setDatas([]);
       setHasMore(true);
     }
     try {
       const res = (await fetchMaterial({}, pageParams)) as any;
       if (res.data) {
-        if (pageNum.current == 1) {
+        if (!res.data.hasNextPage) {
+          setHasMore(false);
+        } else {
+          setPageNum(pageNum + 1);
+        }
+        if (pageNum <= 1) {
           setDatas(res.data.list);
         } else {
           setDatas((prev) => [...prev, ...res.data.list]);
-        }
-        if (!res.data.hasNextPage) {
-          setHasMore(false);
         }
       } else {
         setDatas([]);
@@ -44,9 +49,36 @@ export default function Material() {
     }
   };
   const handleLoadMore = async () => {
-    console.log("hasmore");
-    await loadData();
-    pageNum.current += 1;
+    return await loadData();
+  };
+  const handleEdit = (id: string) => {
+    router.push(`/material/edit/${id}`);
+  };
+  const handleDelete = (id: string) => {
+    Dialog.confirm({
+      content: "Are you sure to delete?",
+      confirmText: "Confirm",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        delMaterial(id);
+      },
+    });
+  };
+  const delMaterial = (id: string) => {
+    deleteMaterial(id)
+      .then((res: any) => {
+        Toast.show({
+          icon: "success",
+          content: "Successfully",
+        });
+        loadData();
+      })
+      .catch((e) => {
+        Toast.show({
+          icon: "fail",
+          content: e,
+        });
+      });
   };
 
   return (
@@ -62,7 +94,9 @@ export default function Material() {
           title="Material"
           subTitle="Input materials details for inventory management"
         >
-          <IconButton text="Create Material"></IconButton>
+          <IconButton text="Create Material" onClick={() => {
+              router.push("/material/create");
+            }}></IconButton>
         </PageHeader>
 
         <div className="p-4">
@@ -94,7 +128,13 @@ export default function Material() {
                   <div key={index} className="mb-4">
                     <WmsCard
                       key={index}
-                      title={"Material Code :" + item.material_code}
+                      title={"Material ID: " + item.id}
+                      hasEdit={true}
+                      hasDelete={true}
+                      onEdit={() => handleEdit(item.id)}
+                      onDelete={() => {
+                        handleDelete(item.id);
+                      }}
                     >
                       <CardItem
                         name="Material Name"
