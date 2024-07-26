@@ -1,11 +1,9 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
-  Button,
   Dialog,
   InfiniteScroll,
   PullToRefresh,
-  SearchBar,
   Toast,
 } from "antd-mobile";
 import PageHeader from "../components/page-header/page-header";
@@ -23,7 +21,7 @@ import moment from "moment";
 import { deleteStocktaking, fetchStocktaking } from "@/actions/auditing";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search } from "@carbon/icons-react";
+import CusSearchBar from "../components/search-bar/cus-searchbar";
 
 export default function Auditing() {
   const router = useRouter();
@@ -46,9 +44,14 @@ export default function Auditing() {
       setHasMore(true);
     }
     try {
-      const res = (await fetchStocktaking({
-        ...query
-      }, pageParams)) as any;
+      const res = (await fetchStocktaking(
+        {
+          type: query.type,
+          status: query.status,
+          source: query.keyword,
+        },
+        pageParams
+      )) as any;
       if (res.data) {
         if (!res.data.hasNextPage) {
           setHasMore(false);
@@ -108,9 +111,9 @@ export default function Auditing() {
       [field]: val,
     }));
   };
-  const handleSearch=()=>{
+  const handleSearch = () => {
     loadData();
-  }
+  };
   return (
     <>
       <PullToRefresh
@@ -155,27 +158,13 @@ export default function Auditing() {
               </select>
             </div>
           </div>
-          <div className="flex flex-row gap-2 items-center mt-4">
-            <div className="flex-1">
-              <SearchBar
-                placeholder="Source"
-                value={query.keyword}
-                onChange={(val) => handleQueryData("keyword",val)}
-                onSearch={(val) => handleQueryData("keyword",val)}
-                style={{
-                  "--border-radius": "100px",
-                  "--background": "#ffffff",
-                  "--height": "32px",
-                  "--padding-left": "12px",
-                }}
-              />
-            </div>
-            <div className="w=[40px]">
-              <Button color="primary" size="small" onClick={handleSearch}>
-                <Search size={24}></Search>
-              </Button>
-            </div>
-          </div>
+          <CusSearchBar
+            value={query.keyword}
+            placeholder="Source"
+            onChange={(val) => handleQueryData("keyword", val)}
+            onSearch={(val) => handleQueryData("keyword", val)}
+            onBtnClick={handleSearch}
+          ></CusSearchBar>
         </div>
         <div className="ml-4 mr-4">
           <div className="mb-4">
