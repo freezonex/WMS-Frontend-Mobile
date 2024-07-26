@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import CusDatePicker from "../components/cus-date-picker/cus-date-picker";
 import CusSearchBar from "../components/search-bar/cus-searchbar";
+import { cusDlg } from "@/utils/common";
 
 export default function Inbound() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function Inbound() {
   const [pageNum, setPageNum] = useState(1);
   const [query, setQuery] = useState({
     status: "",
-    delivery_date: new Date(),
+    delivery_date: "",
     keyword: "",
   });
 
@@ -45,7 +46,14 @@ export default function Inbound() {
       setHasMore(true);
     }
     try {
-      const res = (await fetchInbound({}, pageParams)) as any;
+      const res = (await fetchInbound(
+        {
+          status: query.status,
+          delivery_date: query.delivery_date,
+          purchase_order_no: query.keyword,
+        },
+        pageParams
+      )) as any;
       if (res.data) {
         if (!res.data.hasNextPage) {
           setHasMore(false);
@@ -74,13 +82,8 @@ export default function Inbound() {
   };
 
   const handleDelete = (id: string) => {
-    Dialog.confirm({
-      content: "Are you sure to delete?",
-      confirmText: "Confirm",
-      cancelText: "Cancel",
-      onConfirm: async () => {
-        delInbound(id);
-      },
+    cusDlg.confirm("Are you sure to delete?", () => {
+      delInbound(id);
     });
   };
 
@@ -101,25 +104,27 @@ export default function Inbound() {
       });
   };
   const handleInbound = (id: string) => {
-    const data = {
-      source: "manual",
-      status: "done",
-      id,
-    };
-    updateInboundRecord(data)
-      .then(() => {
-        Toast.show({
-          icon: "success",
-          content: "Successfully",
+    cusDlg.confirm("Are you sure to Inbound?", () => {
+      const data = {
+        source: "manual",
+        status: "done",
+        id,
+      };
+      updateInboundRecord(data)
+        .then(() => {
+          Toast.show({
+            icon: "success",
+            content: "Successfully",
+          });
+          loadData();
+        })
+        .catch((e) => {
+          Toast.show({
+            icon: "fail",
+            content: e,
+          });
         });
-        loadData();
-      })
-      .catch((e) => {
-        Toast.show({
-          icon: "fail",
-          content: e,
-        });
-      });
+    });
   };
 
   const handleQueryData = (field: string, val: string) => {
@@ -127,6 +132,9 @@ export default function Inbound() {
       ...prev,
       [field]: val,
     }));
+  };
+  const handleSearch = () => {
+    loadData();
   };
   return (
     <>
@@ -147,7 +155,7 @@ export default function Inbound() {
         </PageHeader>
 
         <div className="p-4">
-          <div className="flex flex-row justify-between">
+          <div className="flex flex-row justify-between gap-2">
             <div>
               <select
                 value={query.status}
@@ -174,6 +182,7 @@ export default function Inbound() {
             placeholder="Purchase Order"
             onChange={(val) => handleQueryData("keyword", val)}
             onSearch={(val) => handleQueryData("keyword", val)}
+            onBtnClick={handleSearch}
           ></CusSearchBar>
         </div>
         <div className="ml-4 mr-4">

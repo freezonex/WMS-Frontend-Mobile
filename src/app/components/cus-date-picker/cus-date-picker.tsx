@@ -1,6 +1,7 @@
 import { DateTimeFormat } from "@/utils/constant";
 import { Calendar } from "@carbon/icons-react";
 import { CalendarPicker, Input } from "antd-mobile";
+import { CloseCircleOutline } from "antd-mobile-icons";
 import moment from "moment";
 import { CSSProperties, useRef, useState } from "react";
 interface ICusDatePicker {
@@ -19,13 +20,16 @@ export default function CusDatePicker({
   defaultValue,
   setValue,
   placeholder,
-  wrapperStyle
+  wrapperStyle,
 }: ICusDatePicker) {
   const [showCalendar, setShowCalendar] = useState(false);
   const inputRef = useRef<HTMLElement | any>();
   const handleShowDatePicker = () => {
     setShowCalendar(true);
     inputRef.current.blur();
+  };
+  const clearDate = (id: any) => {
+    setValue(null, id);
   };
   return (
     <div className="cus-input" style={wrapperStyle}>
@@ -37,16 +41,28 @@ export default function CusDatePicker({
           }}
           id={id}
           placeholder={placeholder ? placeholder : name}
-          value={moment(value).format(DateTimeFormat.ShortDateTime)}
+          value={
+            value ? moment(value).format(DateTimeFormat.ShortDateTime) : ""
+          }
           onChange={(val) => setValue(val, id ? id : "")}
           clearable
           onClick={handleShowDatePicker}
           onFocus={handleShowDatePicker}
         />
         <Calendar
-          className=" top-3 right-3 absolute"
+          fontSize={18}
+          className="top-2 right-8 absolute"
           onClick={handleShowDatePicker}
         />
+        <CloseCircleOutline
+          fontSize={18}
+          className="right-2 absolute"
+          style={{ top: "7px" }}
+          onClick={(e) => {
+            e.preventDefault;
+            clearDate(id);
+          }}
+        ></CloseCircleOutline>
       </div>
       <CalendarPicker
         visible={showCalendar}
@@ -54,6 +70,7 @@ export default function CusDatePicker({
         onChange={(val) => {
           setValue(val, id ? id : "");
         }}
+        min={new Date(moment().add(-6, "months").format("YYYY-MM-DD HH:mm:ss"))}
         onClose={() => setShowCalendar(false)}
         onMaskClick={() => setShowCalendar(false)}
       />

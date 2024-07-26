@@ -1,4 +1,4 @@
-export const PageSize = 20;
+export const PageSize = 3;
 
 export const DateTimeFormat = {
   LongDateTime: "DD/MM/YYYY HH:mm:ss",
@@ -14,4 +14,9 @@ export const stokingTypes = [
   { text: "", value: "" },
   { text: "Dynamic", value: "dynamic" },
   { text: "Static", value: "static" },
+];
+export const warehouseTypes = [
+  { text: "", value: "" },
+  { text: "Type A", value: "Type A" },
+  { text: "Type B", value: "Type B" },
 ];

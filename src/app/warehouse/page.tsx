@@ -20,18 +20,28 @@ import { deleteWarehouse, fetchWarehouses } from "@/actions/warehouse";
 import CardItem from "../components/wms-card/card-item";
 import PageHeader from "../components/page-header/page-header";
 import IconButton from "../components/icon-button/icon-button";
-import { PageSize } from "@/utils/constant";
+import { PageSize, warehouseTypes } from "@/utils/constant";
 import { useRouter } from "next/navigation";
 import { IPaginated } from "@/interface/IPaginated";
 import Link from "next/link";
+import { cusDlg } from "@/utils/common";
+import CusInput from "../components/cus-input/cus-input";
+import CusSearchBar from "../components/search-bar/cus-searchbar";
 
 export default function Warehouse() {
   const router = useRouter();
   const [datas, setDatas] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageNum, setPageNum] = useState(1);
+  const [isRefresh, setIsRefresh] = useState(false);
+  const [query, setQuery] = useState({
+    type: "",
+    manager: "",
+    keyword: "",
+  });
 
   const loadData = async () => {
+    console.log("loadrefesh", isRefresh);
     const pageParams: IPaginated = {
       pageNum: pageNum,
       pageSize: PageSize,
@@ -41,12 +51,21 @@ export default function Warehouse() {
       setHasMore(true);
     }
     try {
-      const res = (await fetchWarehouses({}, pageParams)) as any;
+      const res = (await fetchWarehouses(
+        {
+          name: query.keyword,
+          manager: query.manager,
+          type: query.type,
+        },
+        pageParams
+      )) as any;
       if (res.data) {
         if (!res.data.hasNextPage) {
           setHasMore(false);
         } else {
-          setPageNum(pageNum + 1);
+          if (!isRefresh) {
+            setPageNum(pageNum + 1);
+          }
         }
         if (pageNum <= 1) {
           setDatas(res.data.list);
@@ -57,24 +76,23 @@ export default function Warehouse() {
         setDatas([]);
         setHasMore(false);
       }
+      if (isRefresh) {
+        setIsRefresh(false);
+      }
     } catch (e) {
       console.log(e);
     }
   };
   const handleLoadMore = async () => {
+    console.log("loadmore");
     return await loadData();
   };
   const handleEdit = (id: string) => {
     router.push(`/warehouse/edit/${id}`);
   };
   const handleDelete = (id: string) => {
-    Dialog.confirm({
-      content: "Are you sure to delete?",
-      confirmText: "Confirm",
-      cancelText: "Cancel",
-      onConfirm: async () => {
-        delWarhouse(id);
-      },
+    cusDlg.confirm("Are you sure to delete?", () => {
+      delWarhouse(id);
     });
   };
   const delWarhouse = (id: string) => {
@@ -93,12 +111,23 @@ export default function Warehouse() {
         });
       });
   };
+  const handleQueryData = (field: string, val: string) => {
+    setQuery((prev) => ({
+      ...prev,
+      [field]: val,
+    }));
+  };
+  const handleSearch = () => {
+    loadData();
+  };
   return (
     <>
       <PullToRefresh
         onRefresh={async () => {
+          setIsRefresh(true);
           setPageNum(1);
-          loadData();
+          await loadData();
+          console.log("pull");
         }}
       >
         <PageHeader
@@ -113,32 +142,36 @@ export default function Warehouse() {
           ></IconButton>
         </PageHeader>
         <div className="p-4">
-          <div className="flex flex-row justify-between">
-            <select className="w-[50%]" onChange={() => {}}>
-              {/* <option value="Type" disabled selected style={{ display: "none" }}>
-            Type
-          </option> */}
-              <option value="test1">test1</option>
-              <option value="test2">test2</option>
-            </select>
-            <select className="w-[50%] ml-2" onChange={() => {}}>
-              {/* <option value="Manager" disabled selected style={{ display: "none" }}>
-            Manager
-          </option> */}
-              <option value="test1">test1</option>
-              <option value="test2">test2</option>
-            </select>
+          <div className="flex flex-row gap-2">
+            <div className="flex-1">
+              <select
+                value={query.type}
+                onChange={(e) => handleQueryData("type", e.target.value)}
+              >
+                {warehouseTypes.map((item, index) => (
+                  <option key={index} value={item.value}>
+                    {item.text}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex-1">
+              <CusInput
+                styleWrapper={{ marginTop: 0 }}
+                id="manager"
+                placeholder="Manager"
+                setValue={(val, id) => handleQueryData(id, val)}
+                value={query.manager}
+              ></CusInput>
+            </div>
           </div>
-          <SearchBar
-            className="mt-4"
-            placeholder="Warehouse ID|Name"
-            style={{
-              "--border-radius": "100px",
-              "--background": "#ffffff",
-              "--height": "32px",
-              "--padding-left": "12px",
-            }}
-          />
+          <CusSearchBar
+            value={query.keyword}
+            placeholder="Warehouse Name"
+            onChange={(val) => handleQueryData("keyword", val)}
+            onSearch={(val) => handleQueryData("keyword", val)}
+            onBtnClick={handleSearch}
+          ></CusSearchBar>
         </div>
 
         <div className="ml-4 mr-4">
@@ -171,7 +204,9 @@ export default function Warehouse() {
                       <CardItem name="Email" value={item.email}></CardItem>
                       <CardItem name="Storage Location">
                         <div>
-                          <Link href={`/warehouse/locations/${item.id}/${item.warehouse_id}/${item.name}`}>
+                          <Link
+                            href={`/warehouse/locations/${item.id}/${item.warehouse_id}/${item.name}`}
+                          >
                             All Location
                           </Link>
                         </div>
