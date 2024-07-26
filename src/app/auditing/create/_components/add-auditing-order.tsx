@@ -1,7 +1,7 @@
 import CusDatePicker from "@/app/components/cus-date-picker/cus-date-picker";
 import CusInput from "@/app/components/cus-input/cus-input";
 import { operationStatuses, stokingTypes } from "@/utils/constant";
-import { Button, Picker } from "antd-mobile";
+import { Button } from "antd-mobile";
 
 export default function AddAuditingOrder({
   formValue,

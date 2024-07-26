@@ -1,7 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
-  SearchBar,
   PullToRefresh,
   InfiniteScroll,
   Dialog,
@@ -10,7 +9,7 @@ import {
 } from "antd-mobile";
 import PageHeader from "../components/page-header/page-header";
 import { IPaginated } from "@/interface/IPaginated";
-import { DateTimeFormat, PageSize } from "@/utils/constant";
+import { DateTimeFormat, operationStatuses, PageSize } from "@/utils/constant";
 import WmsCard from "../components/wms-card/wms-card";
 import CardItem from "../components/wms-card/card-item";
 import {
@@ -22,12 +21,19 @@ import moment from "moment";
 import IconButton from "../components/icon-button/icon-button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import CusDatePicker from "../components/cus-date-picker/cus-date-picker";
+import CusSearchBar from "../components/search-bar/cus-searchbar";
 
 export default function Inbound() {
   const router = useRouter();
   const [datas, setDatas] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageNum, setPageNum] = useState(1);
+  const [query, setQuery] = useState({
+    status: "",
+    delivery_date: new Date(),
+    keyword: "",
+  });
 
   const loadData = async () => {
     const pageParams: IPaginated = {
@@ -115,6 +121,13 @@ export default function Inbound() {
         });
       });
   };
+
+  const handleQueryData = (field: string, val: string) => {
+    setQuery((prev) => ({
+      ...prev,
+      [field]: val,
+    }));
+  };
   return (
     <>
       <PullToRefresh
@@ -135,24 +148,33 @@ export default function Inbound() {
 
         <div className="p-4">
           <div className="flex flex-row justify-between">
-            <select className="w-[50%] ml-2" onChange={() => {}}>
-              {/* <option value="Manager" disabled selected style={{ display: "none" }}>
-            Manager
-          </option> */}
-              <option value="test1">Material Type</option>
-              <option value="test2">test2</option>
-            </select>
+            <div>
+              <select
+                value={query.status}
+                onChange={(e) => handleQueryData("status", e.target.value)}
+              >
+                {operationStatuses.map((item, index) => (
+                  <option key={index} value={item.value}>
+                    {item.text}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <CusDatePicker
+                id="delivery_date"
+                wrapperStyle={{ marginTop: 0 }}
+                value={query.delivery_date}
+                setValue={(val, id) => handleQueryData(id, val)}
+              ></CusDatePicker>
+            </div>
           </div>
-          <SearchBar
-            className="mt-4"
-            placeholder="|"
-            style={{
-              "--border-radius": "100px",
-              "--background": "#ffffff",
-              "--height": "32px",
-              "--padding-left": "12px",
-            }}
-          />
+          <CusSearchBar
+            value={query.keyword}
+            placeholder="Purchase Order"
+            onChange={(val) => handleQueryData("keyword", val)}
+            onSearch={(val) => handleQueryData("keyword", val)}
+          ></CusSearchBar>
         </div>
         <div className="ml-4 mr-4">
           <div className="mb-4">

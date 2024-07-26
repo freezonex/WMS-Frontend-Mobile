@@ -2,14 +2,15 @@ import { DateTimeFormat } from "@/utils/constant";
 import { Calendar } from "@carbon/icons-react";
 import { CalendarPicker, Input } from "antd-mobile";
 import moment from "moment";
-import { useRef, useState } from "react";
+import { CSSProperties, useRef, useState } from "react";
 interface ICusDatePicker {
   id?: string;
-  name: string;
+  name?: string;
   value: any;
   defaultValue?: string;
   setValue: (val: any, id: string) => void;
   placeholder?: string;
+  wrapperStyle?: CSSProperties;
 }
 export default function CusDatePicker({
   id,
@@ -18,6 +19,7 @@ export default function CusDatePicker({
   defaultValue,
   setValue,
   placeholder,
+  wrapperStyle
 }: ICusDatePicker) {
   const [showCalendar, setShowCalendar] = useState(false);
   const inputRef = useRef<HTMLElement | any>();
@@ -26,8 +28,8 @@ export default function CusDatePicker({
     inputRef.current.blur();
   };
   return (
-    <div className="cus-input">
-      <p className="name">{name}</p>
+    <div className="cus-input" style={wrapperStyle}>
+      {name && <p className="name">{name}</p>}
       <div className="bg-white relative">
         <Input
           ref={(ref) => {
