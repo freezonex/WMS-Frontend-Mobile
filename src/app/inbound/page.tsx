@@ -158,7 +158,7 @@ export default function Inbound() {
 
         <div className="p-4">
           <div className="flex flex-row justify-between gap-2">
-            <div>
+            <div className="flex-1">
               <select
                 value={query.status}
                 onChange={(e) => handleQueryData("status", e.target.value)}
@@ -170,7 +170,7 @@ export default function Inbound() {
                 ))}
               </select>
             </div>
-            <div>
+            <div className="flex-1">
               <CusDatePicker
                 id="delivery_date"
                 wrapperStyle={{ marginTop: 0 }}
