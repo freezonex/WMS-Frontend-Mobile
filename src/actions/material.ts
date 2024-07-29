@@ -16,8 +16,8 @@ export async function updateMaterial(body: object) {
   return post("/wms/material/update", body);
 }
 
-export async function deleteMaterial(body: object) {
-  return post("/wms/material/delete", body);
+export async function deleteMaterial(id: string) {
+  return post("/wms/material/delete", { id: id });
 }
 
 export async function fetchMaterialRFID() {

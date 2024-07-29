@@ -5,6 +5,10 @@ export const DateTimeFormat = {
   ShortDateTime: "DD/MM/YYYY",
 };
 
+export const materialTypes = [
+  { text: "", value: "" },
+  { text: "stock material", value: "stock material" }
+];
 export const operationStatuses = [
   { text: "", value: "" },
   { text: "Pending", value: "pending" },
