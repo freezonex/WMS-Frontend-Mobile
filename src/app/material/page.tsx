@@ -113,7 +113,6 @@ export default function Material() {
       <PullToRefresh
         onRefresh={async () => {
           setDatas([]);
-          pageNum.current = 1;
           await handleLoadMore();
         }}
       >
