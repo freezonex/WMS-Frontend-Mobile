@@ -5,6 +5,7 @@ import { Button, Toast } from "antd-mobile";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { addStorageLocation } from "@/actions/storage";
+import { IbmDb2Warehouse } from "@carbon/icons-react";
 
 interface IParams {
   params: {
@@ -64,6 +65,7 @@ export default function CreateLocation({ params }: IParams) {
         <PageHeader
           title="Warehouse"
           subTitle="Warehouses for your storage solutions"
+          icon={<IbmDb2Warehouse size={110} color="blue"></IbmDb2Warehouse>}
         ></PageHeader>
         <div className="p-4">
           <p className=" font-normal text-[20px]">Add a Storage Location</p>

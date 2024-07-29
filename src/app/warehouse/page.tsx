@@ -1,18 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
-  Button,
-  Form,
-  Space,
-  Input,
-  Popup,
-  SearchBar,
-  Card,
   InfiniteScroll,
   PullToRefresh,
-  Modal,
   Toast,
-  Dialog,
 } from "antd-mobile";
 
 import WmsCard from "../components/wms-card/wms-card";
@@ -27,6 +18,7 @@ import Link from "next/link";
 import { cusDlg } from "@/utils/common";
 import CusInput from "../components/cus-input/cus-input";
 import CusSearchBar from "../components/search-bar/cus-searchbar";
+import { IbmDb2Warehouse } from "@carbon/icons-react";
 
 export default function Warehouse() {
   const router = useRouter();
@@ -133,6 +125,7 @@ export default function Warehouse() {
         <PageHeader
           title="Warehouse"
           subTitle="List of warehouses for your storage solutions"
+          icon={<IbmDb2Warehouse size={110} color="blue"></IbmDb2Warehouse>}
         >
           <IconButton
             text="Create Warehouse"

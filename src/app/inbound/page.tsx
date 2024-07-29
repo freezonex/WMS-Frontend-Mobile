@@ -24,6 +24,7 @@ import Link from "next/link";
 import CusDatePicker from "../components/cus-date-picker/cus-date-picker";
 import CusSearchBar from "../components/search-bar/cus-searchbar";
 import { cusDlg } from "@/utils/common";
+import { PortInput } from "@carbon/icons-react";
 
 export default function Inbound() {
   const router = useRouter();
@@ -147,6 +148,7 @@ export default function Inbound() {
         <PageHeader
           title="Inbound"
           subTitle="Log new inventory arrivals quickly"
+          icon={<PortInput size={110} color="blue"></PortInput>}
         >
           <IconButton
             text="Create Inbound List"

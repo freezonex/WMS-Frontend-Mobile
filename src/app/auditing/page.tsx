@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
-import { Dialog, InfiniteScroll, PullToRefresh, Toast } from "antd-mobile";
+import { InfiniteScroll, PullToRefresh, Toast } from "antd-mobile";
 import PageHeader from "../components/page-header/page-header";
 import IconButton from "../components/icon-button/icon-button";
 import { IPaginated } from "@/interface/IPaginated";
@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import CusSearchBar from "../components/search-bar/cus-searchbar";
 import { cusDlg } from "@/utils/common";
+import { InventoryManagement } from "@carbon/icons-react";
 
 export default function Auditing() {
   const router = useRouter();
@@ -116,6 +117,7 @@ export default function Auditing() {
         <PageHeader
           title="Auditing"
           subTitle="Verify and adjust inventory accuracy"
+          icon={<InventoryManagement size={110} color="blue"></InventoryManagement>}
         >
           <IconButton
             text="Create Auditing Order"

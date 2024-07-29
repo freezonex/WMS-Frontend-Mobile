@@ -2,6 +2,7 @@
 import { fetchStocktaking } from "@/actions/auditing";
 import PageHeader from "@/app/components/page-header/page-header";
 import { IPaginated } from "@/interface/IPaginated";
+import { InventoryManagement } from "@carbon/icons-react";
 import { List, Tag } from "antd-mobile";
 import { useEffect, useState } from "react";
 
@@ -40,6 +41,7 @@ export default function AuditingDetail({ id }: any) {
         <PageHeader
           title="Auditing"
           subTitle="Verify and adjust inventory accuracy"
+          icon={<InventoryManagement size={110} color="blue"></InventoryManagement>}
         ></PageHeader>
         <div className="p-4">
           <p className=" font-normal text-[20px]">Result</p>

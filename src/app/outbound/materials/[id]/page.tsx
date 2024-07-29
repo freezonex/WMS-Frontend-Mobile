@@ -2,6 +2,7 @@
 import { fetchOutbound } from "@/actions/outbound";
 import PageHeader from "@/app/components/page-header/page-header";
 import { IPaginated } from "@/interface/IPaginated";
+import { PortOutput } from "@carbon/icons-react";
 import { List } from "antd-mobile";
 import { useEffect, useState } from "react";
 
@@ -33,6 +34,7 @@ export default function OutboundMaterials({ params }: IParams) {
         <PageHeader
           title="Outbound"
           subTitle="Process and track inventory dispatches"
+          icon={<PortOutput size={110} color="blue"></PortOutput>}
         ></PageHeader>
         <div className="p-4">
           <p className=" font-normal text-[20px]">All Material</p>

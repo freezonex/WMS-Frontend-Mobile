@@ -10,6 +10,7 @@ import {
   IAuditingCreateVM,
 } from "@/interface/viewmode/auditing";
 import { addStocktakingRecord } from "@/actions/auditing";
+import { InventoryManagement } from "@carbon/icons-react";
 interface IFormValue {
   id: "";
   source: "";
@@ -117,6 +118,7 @@ export default function CreateAuditing() {
         <PageHeader
           title="Auditing"
           subTitle="Verify and adjust inventory accuracy"
+          icon={<InventoryManagement size={110} color="blue"></InventoryManagement>}
         ></PageHeader>
         <div className="p-4">
           <p className=" font-normal text-[20px]">Create a Auditing Order</p>

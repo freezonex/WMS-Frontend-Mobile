@@ -2,10 +2,10 @@
 
 import PageHeader from "@/app/components/page-header/page-header";
 import { Button, Dialog, Toast } from "antd-mobile";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IPaginated } from "@/interface/IPaginated";
-import { Add } from "@carbon/icons-react";
+import { Add, IbmDb2Warehouse } from "@carbon/icons-react";
 import CardItem from "@/app/components/wms-card/card-item";
 import WmsCard from "@/app/components/wms-card/wms-card";
 
@@ -79,6 +79,7 @@ export default function WarehouseLocations({ params }: IParams) {
         <PageHeader
           title="Warehouse"
           subTitle="Warehouses for your storage solutions"
+          icon={<IbmDb2Warehouse size={110} color="blue"></IbmDb2Warehouse>}
         ></PageHeader>
         <div className="p-4">
           <div className="flex flex-row justify-between">

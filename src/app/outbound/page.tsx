@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import CusDatePicker from "../components/cus-date-picker/cus-date-picker";
 import CusSearchBar from "../components/search-bar/cus-searchbar";
 import { cusDlg } from "@/utils/common";
+import { PortOutput } from "@carbon/icons-react";
 
 export default function Outbound() {
   const router = useRouter();
@@ -146,6 +147,7 @@ export default function Outbound() {
         <PageHeader
           title="Outbound"
           subTitle="Process and track inventory dispatches"
+          icon={<PortOutput size={110} color="blue"></PortOutput>}
         >
           <IconButton
             text="Create a Outbound List"
