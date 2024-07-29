@@ -7,7 +7,7 @@ import { useState } from "react";
 
 interface IWmsCardProps {
   title: string;
-  children: React.ReactElement|React.ReactElement[];
+  children: React.ReactElement | React.ReactElement[];
   onEdit?: Function;
   onDelete?: Function;
   hasEdit?: boolean;
@@ -62,7 +62,15 @@ export default function WmsCard({
           )}
         </div>
       </div>
-      <div className="p-4 bg-white">{children}</div>
+      <div
+        className="p-4"
+        style={{
+          background: "var(--background-content)",
+          color: "var(--foreground-color)"
+        }}
+      >
+        {children}
+      </div>
       <ActionSheet
         visible={visible}
         actions={actions}

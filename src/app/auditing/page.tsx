@@ -1,11 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
-import {
-  Dialog,
-  InfiniteScroll,
-  PullToRefresh,
-  Toast,
-} from "antd-mobile";
+import { Dialog, InfiniteScroll, PullToRefresh, Toast } from "antd-mobile";
 import PageHeader from "../components/page-header/page-header";
 import IconButton from "../components/icon-button/icon-button";
 import { IPaginated } from "@/interface/IPaginated";
@@ -22,6 +17,7 @@ import { deleteStocktaking, fetchStocktaking } from "@/actions/auditing";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import CusSearchBar from "../components/search-bar/cus-searchbar";
+import { cusDlg } from "@/utils/common";
 
 export default function Auditing() {
   const router = useRouter();
@@ -77,13 +73,8 @@ export default function Auditing() {
   };
 
   const handleDelete = (id: string) => {
-    Dialog.confirm({
-      content: "Are you sure to delete?",
-      confirmText: "Confirm",
-      cancelText: "Cancel",
-      onConfirm: async () => {
-        auditingDelete(id);
-      },
+    cusDlg.confirm("Are you sure to delete?", () => {
+      auditingDelete(id);
     });
   };
   const auditingDelete = (id: string) => {
