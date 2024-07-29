@@ -135,7 +135,6 @@ export default function InboundNextCard({ onBack, onSave }: IProps) {
 
   const handleScan = (rowId: number) => {
     setCurrentRow(rowId);
-    refInput.current.focus();
     setShowScan(true);
   };
 
@@ -152,6 +151,7 @@ export default function InboundNextCard({ onBack, onSave }: IProps) {
       })
     );
     setTimeout(() => {
+      refInput.current.focus();
       refInput.current.blur();
     }, 500);
   };
@@ -212,6 +212,7 @@ export default function InboundNextCard({ onBack, onSave }: IProps) {
                         <DataItem>
                           <div>
                             <CusInput
+                              type="number"
                               styleWrapper={{
                                 marginTop: "0px",
                                 background: "#eee",

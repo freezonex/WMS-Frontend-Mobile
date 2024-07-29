@@ -1,7 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
-  SearchBar,
   PullToRefresh,
   InfiniteScroll,
   Dialog,
@@ -10,7 +9,7 @@ import {
 } from "antd-mobile";
 import PageHeader from "../components/page-header/page-header";
 import { IPaginated } from "@/interface/IPaginated";
-import { DateTimeFormat, PageSize } from "@/utils/constant";
+import { DateTimeFormat, operationStatuses, PageSize } from "@/utils/constant";
 import WmsCard from "../components/wms-card/wms-card";
 import CardItem from "../components/wms-card/card-item";
 import {
@@ -22,12 +21,20 @@ import moment from "moment";
 import IconButton from "../components/icon-button/icon-button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import CusDatePicker from "../components/cus-date-picker/cus-date-picker";
+import CusSearchBar from "../components/search-bar/cus-searchbar";
+import { cusDlg } from "@/utils/common";
 
 export default function Inbound() {
   const router = useRouter();
   const [datas, setDatas] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageNum, setPageNum] = useState(1);
+  const [query, setQuery] = useState({
+    status: "",
+    delivery_date: "",
+    keyword: "",
+  });
 
   const loadData = async () => {
     const pageParams: IPaginated = {
@@ -39,7 +46,14 @@ export default function Inbound() {
       setHasMore(true);
     }
     try {
-      const res = (await fetchInbound({}, pageParams)) as any;
+      const res = (await fetchInbound(
+        {
+          status: query.status,
+          delivery_date: query.delivery_date,
+          purchase_order_no: query.keyword,
+        },
+        pageParams
+      )) as any;
       if (res.data) {
         if (!res.data.hasNextPage) {
           setHasMore(false);
@@ -68,13 +82,8 @@ export default function Inbound() {
   };
 
   const handleDelete = (id: string) => {
-    Dialog.confirm({
-      content: "Are you sure to delete?",
-      confirmText: "Confirm",
-      cancelText: "Cancel",
-      onConfirm: async () => {
-        delInbound(id);
-      },
+    cusDlg.confirm("Are you sure to delete?", () => {
+      delInbound(id);
     });
   };
 
@@ -95,25 +104,37 @@ export default function Inbound() {
       });
   };
   const handleInbound = (id: string) => {
-    const data = {
-      source: "manual",
-      status: "done",
-      id,
-    };
-    updateInboundRecord(data)
-      .then(() => {
-        Toast.show({
-          icon: "success",
-          content: "Successfully",
+    cusDlg.confirm("Are you sure to Inbound?", () => {
+      const data = {
+        source: "manual",
+        status: "done",
+        id,
+      };
+      updateInboundRecord(data)
+        .then(() => {
+          Toast.show({
+            icon: "success",
+            content: "Successfully",
+          });
+          loadData();
+        })
+        .catch((e) => {
+          Toast.show({
+            icon: "fail",
+            content: e,
+          });
         });
-        loadData();
-      })
-      .catch((e) => {
-        Toast.show({
-          icon: "fail",
-          content: e,
-        });
-      });
+    });
+  };
+
+  const handleQueryData = (field: string, val: string) => {
+    setQuery((prev) => ({
+      ...prev,
+      [field]: val,
+    }));
+  };
+  const handleSearch = () => {
+    loadData();
   };
   return (
     <>
@@ -134,25 +155,35 @@ export default function Inbound() {
         </PageHeader>
 
         <div className="p-4">
-          <div className="flex flex-row justify-between">
-            <select className="w-[50%] ml-2" onChange={() => {}}>
-              {/* <option value="Manager" disabled selected style={{ display: "none" }}>
-            Manager
-          </option> */}
-              <option value="test1">Material Type</option>
-              <option value="test2">test2</option>
-            </select>
+          <div className="flex flex-row justify-between gap-2">
+            <div>
+              <select
+                value={query.status}
+                onChange={(e) => handleQueryData("status", e.target.value)}
+              >
+                {operationStatuses.map((item, index) => (
+                  <option key={index} value={item.value}>
+                    {item.text}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <CusDatePicker
+                id="delivery_date"
+                wrapperStyle={{ marginTop: 0 }}
+                value={query.delivery_date}
+                setValue={(val, id) => handleQueryData(id, val)}
+              ></CusDatePicker>
+            </div>
           </div>
-          <SearchBar
-            className="mt-4"
-            placeholder="|"
-            style={{
-              "--border-radius": "100px",
-              "--background": "#ffffff",
-              "--height": "32px",
-              "--padding-left": "12px",
-            }}
-          />
+          <CusSearchBar
+            value={query.keyword}
+            placeholder="Purchase Order"
+            onChange={(val) => handleQueryData("keyword", val)}
+            onSearch={(val) => handleQueryData("keyword", val)}
+            onBtnClick={handleSearch}
+          ></CusSearchBar>
         </div>
         <div className="ml-4 mr-4">
           <div className="mb-4">
