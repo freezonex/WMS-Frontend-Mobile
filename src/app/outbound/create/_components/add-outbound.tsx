@@ -1,5 +1,5 @@
-import CusDatePicker from "@/app/components/cus-date-picker/cus-date-picker";
-import CusInput from "@/app/components/cus-input/cus-input";
+import CusDatePicker from "@/components/cus-date-picker/cus-date-picker";
+import CusInput from "@/components/cus-input/cus-input";
 import { Button } from "antd-mobile";
 
 export default function AddOutboundCard({

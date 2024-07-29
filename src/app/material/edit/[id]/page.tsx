@@ -1,11 +1,12 @@
 "use client";
-import CusInput from "@/app/components/cus-input/cus-input";
-import PageHeader from "@/app/components/page-header/page-header";
+import CusInput from "@/components/cus-input/cus-input";
+import PageHeader from "@/components/page-header/page-header";
 import { Button, Toast } from "antd-mobile";
 import { useState,useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { updateMaterial,fetchMaterial } from "@/actions/material";
 import { IPaginated } from "@/interface/IPaginated";
+import { Product } from "@carbon/icons-react";
 
 interface IParams {
   params: {
@@ -82,6 +83,7 @@ export default function EditMaterial({ params }: IParams) {
         <PageHeader
           title="Material"
           subTitle="Input materials details for inventory management"
+          icon={<Product size={110} color="blue"></Product>}
         ></PageHeader>
         <div className="p-4">
           <p className=" font-normal text-[20px]">Create A Material</p>

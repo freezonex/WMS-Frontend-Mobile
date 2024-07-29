@@ -1,6 +1,6 @@
 "use client";
-import CusInput from "@/app/components/cus-input/cus-input";
-import PageHeader from "@/app/components/page-header/page-header";
+import CusInput from "@/components/cus-input/cus-input";
+import PageHeader from "@/components/page-header/page-header";
 import { Button, Toast } from "antd-mobile";
 import { useState } from "react";
 import { useRouter } from "next/navigation";

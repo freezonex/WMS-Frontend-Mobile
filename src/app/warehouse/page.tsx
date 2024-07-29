@@ -6,18 +6,18 @@ import {
   Toast,
 } from "antd-mobile";
 
-import WmsCard from "../components/wms-card/wms-card";
+import WmsCard from "../../components/wms-card/wms-card";
 import { deleteWarehouse, fetchWarehouses } from "@/actions/warehouse";
-import CardItem from "../components/wms-card/card-item";
-import PageHeader from "../components/page-header/page-header";
-import IconButton from "../components/icon-button/icon-button";
+import CardItem from "../../components/wms-card/card-item";
+import PageHeader from "../../components/page-header/page-header";
+import IconButton from "../../components/icon-button/icon-button";
 import { PageSize, warehouseTypes } from "@/utils/constant";
 import { useRouter } from "next/navigation";
 import { IPaginated } from "@/interface/IPaginated";
 import Link from "next/link";
 import { cusDlg } from "@/utils/common";
-import CusInput from "../components/cus-input/cus-input";
-import CusSearchBar from "../components/search-bar/cus-searchbar";
+import CusInput from "../../components/cus-input/cus-input";
+import CusSearchBar from "../../components/search-bar/cus-searchbar";
 import { IbmDb2Warehouse } from "@carbon/icons-react";
 
 export default function Warehouse() {

@@ -1,8 +1,8 @@
 "use client";
 import React, { useRef, useState } from "react";
 import { InfiniteScroll, PullToRefresh, Toast } from "antd-mobile";
-import PageHeader from "../components/page-header/page-header";
-import IconButton from "../components/icon-button/icon-button";
+import PageHeader from "../../components/page-header/page-header";
+import IconButton from "../../components/icon-button/icon-button";
 import { IPaginated } from "@/interface/IPaginated";
 import {
   DateTimeFormat,
@@ -10,13 +10,13 @@ import {
   PageSize,
   stokingTypes,
 } from "@/utils/constant";
-import CardItem from "../components/wms-card/card-item";
-import WmsCard from "../components/wms-card/wms-card";
+import CardItem from "../../components/wms-card/card-item";
+import WmsCard from "../../components/wms-card/wms-card";
 import moment from "moment";
 import { deleteStocktaking, fetchStocktaking } from "@/actions/auditing";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import CusSearchBar from "../components/search-bar/cus-searchbar";
+import CusSearchBar from "../../components/search-bar/cus-searchbar";
 import { cusDlg } from "@/utils/common";
 import { InventoryManagement } from "@carbon/icons-react";
 

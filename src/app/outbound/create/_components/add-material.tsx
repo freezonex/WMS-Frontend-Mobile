@@ -1,14 +1,14 @@
 import { fetchMaterialWithFilters } from "@/actions/material";
 import { fetchWHNameMap } from "@/actions/warehouse";
-import CusInput from "@/app/components/cus-input/cus-input";
-import CardItem from "@/app/components/wms-card/card-item";
-import WmsCard from "@/app/components/wms-card/wms-card";
+import CusInput from "@/components/cus-input/cus-input";
+import CardItem from "@/components/wms-card/card-item";
+import WmsCard from "@/components/wms-card/wms-card";
 import { IMaterialDetail } from "@/interface/viewmode/inbound";
 import { ScanAlt } from "@carbon/icons-react";
 import { Button } from "antd-mobile";
 import { AddCircleOutline } from "antd-mobile-icons";
 import { useEffect, useRef, useState } from "react";
-import ScanQrCode from "@/app/components/scan-qrcode/scan-qrcode";
+import ScanQrCode from "@/components/scan-qrcode/scan-qrcode";
 
 interface IProps {
   onBack: (

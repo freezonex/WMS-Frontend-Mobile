@@ -1,5 +1,5 @@
 "use client";
-import PageHeader from "@/app/components/page-header/page-header";
+import PageHeader from "@/components/page-header/page-header";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { IMaterialDetail } from "@/interface/viewmode/inbound";

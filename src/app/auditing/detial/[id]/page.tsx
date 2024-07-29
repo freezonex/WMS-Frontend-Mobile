@@ -1,6 +1,6 @@
 "use client";
 import { fetchStocktaking } from "@/actions/auditing";
-import PageHeader from "@/app/components/page-header/page-header";
+import PageHeader from "@/components/page-header/page-header";
 import { IPaginated } from "@/interface/IPaginated";
 import { InventoryManagement } from "@carbon/icons-react";
 import { List, Tag } from "antd-mobile";

@@ -1,13 +1,13 @@
 "use client";
 
-import PageHeader from "@/app/components/page-header/page-header";
+import PageHeader from "@/components/page-header/page-header";
 import { Button, Dialog, Toast } from "antd-mobile";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IPaginated } from "@/interface/IPaginated";
 import { Add, IbmDb2Warehouse } from "@carbon/icons-react";
-import CardItem from "@/app/components/wms-card/card-item";
-import WmsCard from "@/app/components/wms-card/wms-card";
+import CardItem from "@/components/wms-card/card-item";
+import WmsCard from "@/components/wms-card/wms-card";
 
 import {
   deleteStorageLocation,

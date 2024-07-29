@@ -1,6 +1,6 @@
 "use client";
 import { fetchInbound } from "@/actions/inbound";
-import PageHeader from "@/app/components/page-header/page-header";
+import PageHeader from "@/components/page-header/page-header";
 import { IPaginated } from "@/interface/IPaginated";
 import { PortInput } from "@carbon/icons-react";
 import { List } from "antd-mobile";

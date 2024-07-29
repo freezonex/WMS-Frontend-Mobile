@@ -7,12 +7,12 @@ import {
   Dialog,
   Toast,
 } from "antd-mobile";
-import PageHeader from "../components/page-header/page-header";
-import IconButton from "../components/icon-button/icon-button";
+import PageHeader from "../../components/page-header/page-header";
+import IconButton from "../../components/icon-button/icon-button";
 import { IPaginated } from "@/interface/IPaginated";
 import { DateTimeFormat, operationStatuses, PageSize } from "@/utils/constant";
-import CardItem from "../components/wms-card/card-item";
-import WmsCard from "../components/wms-card/wms-card";
+import CardItem from "../../components/wms-card/card-item";
+import WmsCard from "../../components/wms-card/wms-card";
 import {
   deleteOutbound,
   fetchOutbound,
@@ -21,8 +21,8 @@ import {
 import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import CusDatePicker from "../components/cus-date-picker/cus-date-picker";
-import CusSearchBar from "../components/search-bar/cus-searchbar";
+import CusDatePicker from "../../components/cus-date-picker/cus-date-picker";
+import CusSearchBar from "../../components/search-bar/cus-searchbar";
 import { cusDlg } from "@/utils/common";
 import { PortOutput } from "@carbon/icons-react";
 

@@ -2,14 +2,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { SearchBar, PullToRefresh, InfiniteScroll,  Dialog,Toast } from "antd-mobile";
 
-import WmsCard from "../components/wms-card/wms-card";
+import WmsCard from "../../components/wms-card/wms-card";
 import { fetchMaterial,deleteMaterial } from "@/actions/material";
 import { IPaginated } from "@/interface/IPaginated";
-import CardItem from "../components/wms-card/card-item";
-import PageHeader from "../components/page-header/page-header";
-import IconButton from "../components/icon-button/icon-button";
+import CardItem from "../../components/wms-card/card-item";
+import PageHeader from "../../components/page-header/page-header";
+import IconButton from "../../components/icon-button/icon-button";
 import { PageSize } from "@/utils/constant";
 import { useRouter } from "next/navigation";
+import { Product } from "@carbon/icons-react";
 
 
 export default function Material() {
@@ -93,6 +94,7 @@ export default function Material() {
         <PageHeader
           title="Material"
           subTitle="Input materials details for inventory management"
+          icon={<Product size={110} color="blue"></Product>}
         >
           <IconButton text="Create Material" onClick={() => {
               router.push("/material/create");

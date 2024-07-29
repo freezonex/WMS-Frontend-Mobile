@@ -1,8 +1,8 @@
 import { fetchMaterial } from "@/actions/material";
 import { fetchWHNameMap, fetchWHSLNameMap } from "@/actions/warehouse";
-import CusInput from "@/app/components/cus-input/cus-input";
-import CardItem from "@/app/components/wms-card/card-item";
-import WmsCard from "@/app/components/wms-card/wms-card";
+import CusInput from "@/components/cus-input/cus-input";
+import CardItem from "@/components/wms-card/card-item";
+import WmsCard from "@/components/wms-card/wms-card";
 import {
   IAuditingMaterial,
   IAuditingCreateVM,
