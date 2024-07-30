@@ -208,7 +208,11 @@ export default function AddAduditingOrderDetail({ onBack, onSave }: IProps) {
                   >
                     {data.materials.map((item: any, i: number) => {
                       return (
-                        <div className="mb-4" key={i}>
+                        <div
+                          className="mb-4"
+                          style={{ color: "var(--foreground-color)" }}
+                          key={i}
+                        >
                           <WmsCard title={item.material_name}>
                             <CardItem name="Specifition" value="Default">
                               <DataItem>
