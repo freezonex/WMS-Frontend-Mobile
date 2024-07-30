@@ -2,11 +2,12 @@
 import CusInput from "@/components/cus-input/cus-input";
 import PageHeader from "@/components/page-header/page-header";
 import { Button, Toast } from "antd-mobile";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { addMaterial } from "@/actions/material";
 import { Product } from "@carbon/icons-react";
 import { materialTypes } from "@/utils/constant";
+import { fetchWHNameMap } from "@/actions/warehouse";
 
 export default function CreateMaterial() {
   const router = useRouter();
@@ -19,9 +20,22 @@ export default function CreateMaterial() {
     unit: "",
     status: "",
     note: "",
+    expect_wh_id: "",
     expect_storage_locations: "",
   });
+  const [whNameMaps, setWhNameMaps] = useState<any[]>([]);
 
+  useEffect(() => {
+    fetchWHNameMap({ pageNum: 1, pageSize: 999999 })
+      .then((res: any) => {
+        if (res.data) {
+          setWhNameMaps(res.data.list);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to fetch WH name map:", error);
+      });
+  }, []);
   const handlerSetFormValues = (val: any, id: string) => {
     setFormValues((prevValues) => ({
       ...prevValues,
@@ -41,6 +55,7 @@ export default function CreateMaterial() {
           unit: "",
           status: "",
           note: "",
+          expect_wh_id: "",
           expect_storage_locations: "",
         });
         Toast.show({
@@ -111,7 +126,7 @@ export default function CreateMaterial() {
             name="Max Stock"
             value={formValue.max}
             setValue={handlerSetFormValues}
-          ></CusInput>{" "}
+          ></CusInput>
           <CusInput
             id="unit"
             name="Unit"
@@ -130,6 +145,24 @@ export default function CreateMaterial() {
             value={formValue.note}
             setValue={handlerSetFormValues}
           ></CusInput>
+          <div className="mt-6">
+            <p className="mb-2">Warehouse</p>
+            <select
+              value={formValue.expect_wh_id}
+              onChange={(e) =>
+                handlerSetFormValues(e.target.value, "expect_wh_id")
+              }
+            >
+              <option className="placeholder" value="" disabled>
+                Please choose
+              </option>
+              {whNameMaps.map((item, index) => (
+                <option key={index} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
           <CusInput
             id="expect_storage_locations"
             name="Expect Location"

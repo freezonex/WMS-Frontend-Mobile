@@ -65,10 +65,10 @@ export default function OutboundNextCard({ onBack, onSave }: IProps) {
       })
     );
   };
-  const handleBlur = async (e: any, rowId: number) => {
-    console.log(e.target.value, rowId);
+  const handleBlur = async (value: string, rowId: number) => {
+    console.log(value, rowId);
     const materialData = (await fetchMaterialWithFilters({
-      material_code: e.target.value,
+      material_code: value,
     })) as any;
     if (
       materialData &&
@@ -135,7 +135,6 @@ export default function OutboundNextCard({ onBack, onSave }: IProps) {
 
   const handleScan = (rowId: number) => {
     setCurrentRow(rowId);
-    refInput.current.focus();
     setShowScan(true);
   };
 
@@ -152,7 +151,7 @@ export default function OutboundNextCard({ onBack, onSave }: IProps) {
       })
     );
     setTimeout(() => {
-      refInput.current.blur();
+      handleBlur(val, rowId);
     }, 500);
   };
 
@@ -184,7 +183,9 @@ export default function OutboundNextCard({ onBack, onSave }: IProps) {
                               setValue={(val, id) =>
                                 handleSetFormValues(val, id, index)
                               }
-                              onBlur={(e) => handleBlur(e, index)}
+                              onBlur={(e: any) =>
+                                handleBlur(e.target.value, index)
+                              }
                               refInput={refInput}
                             ></CusInput>
                           </div>
@@ -253,7 +254,10 @@ export default function OutboundNextCard({ onBack, onSave }: IProps) {
             })}
         </div>
       </div>
-      <Button className="mt-4 w-[100%] h-14" onClick={handleAddOutboundMaterial}>
+      <Button
+        className="mt-4 w-[100%] h-14"
+        onClick={handleAddOutboundMaterial}
+      >
         <div className="flex flex-row items-center justify-center">
           <AddCircleOutline fontSize={48} color="#ccc"></AddCircleOutline>
         </div>

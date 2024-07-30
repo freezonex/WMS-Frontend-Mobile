@@ -8,6 +8,7 @@ import { updateMaterial, fetchMaterial } from "@/actions/material";
 import { IPaginated } from "@/interface/IPaginated";
 import { Product } from "@carbon/icons-react";
 import { materialTypes } from "@/utils/constant";
+import { fetchWHNameMap } from "@/actions/warehouse";
 
 interface IParams {
   params: {
@@ -25,9 +26,22 @@ export default function EditMaterial({ params }: IParams) {
     unit: "",
     status: "",
     note: "",
+    expect_wh_id: "",
     expect_storage_locations: "",
   });
+  const [whNameMaps, setWhNameMaps] = useState<any[]>([]);
 
+  useEffect(() => {
+    fetchWHNameMap({ pageNum: 1, pageSize: 999999 })
+      .then((res: any) => {
+        if (res.data) {
+          setWhNameMaps(res.data.list);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to fetch WH name map:", error);
+      });
+  }, []);
   useEffect(() => {
     const pageObject: IPaginated = {
       pageNum: 1,
@@ -154,9 +168,28 @@ export default function EditMaterial({ params }: IParams) {
             value={formValue.note}
             setValue={handlerSetFormValues}
           ></CusInput>
+          <div className="mt-6">
+            <p className="mb-2">Warehouse</p>
+            <select
+              value={formValue.expect_wh_id}
+              onChange={(e) =>
+                handlerSetFormValues(e.target.value, "expect_wh_id")
+              }
+            >
+              <option className="placeholder" value="" disabled>
+                Please choose
+              </option>
+              {whNameMaps.map((item, index) => (
+                <option key={index} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
           <CusInput
             id="expect_storage_locations"
             name="Expect Location"
+            placeholder="e.g. A-01,B-01"
             value={formValue.expect_storage_locations}
             setValue={handlerSetFormValues}
           ></CusInput>

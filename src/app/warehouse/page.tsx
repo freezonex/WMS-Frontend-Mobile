@@ -36,7 +36,6 @@ export default function Warehouse() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRefresh]);
   const loadData = async () => {
-    console.log("loadrefesh", isRefresh);
     const pageParams: IPaginated = {
       pageNum: pageNum,
       pageSize: PageSize,
@@ -82,7 +81,6 @@ export default function Warehouse() {
     }
   };
   const handleLoadMore = async () => {
-    console.log("loadmore");
     return await loadData();
   };
   const handleEdit = (id: string) => {
