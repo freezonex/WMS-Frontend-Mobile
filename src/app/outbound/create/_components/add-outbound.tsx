@@ -47,7 +47,7 @@ export default function AddOutboundCard({
           value={formValue.status}
           onChange={(e) => handleSetFormValues(e.target.value, "status")}
         >
-          <option className="placeholder" value="" selected disabled>
+          <option className="placeholder" value="" disabled>
             Status
           </option>
           {operationStatuses.map((item, index) => (

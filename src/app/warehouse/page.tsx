@@ -144,7 +144,7 @@ export default function Warehouse() {
                 value={query.type}
                 onChange={(e) => handleQueryData("type", e.target.value)}
               >
-                <option className="placeholder" value="" selected disabled>
+                <option className="placeholder" value="" disabled>
                   Type
                 </option>
                 {warehouseTypes.map((item, index) => (

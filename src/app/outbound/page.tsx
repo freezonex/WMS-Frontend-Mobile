@@ -1,11 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  InfiniteScroll,
-  PullToRefresh,
-  Toast,
-} from "antd-mobile";
+import { Button, InfiniteScroll, PullToRefresh, Toast } from "antd-mobile";
 import PageHeader from "../../components/page-header/page-header";
 import IconButton from "../../components/icon-button/icon-button";
 import { IPaginated } from "@/interface/IPaginated";
@@ -39,7 +34,7 @@ export default function Outbound() {
   });
 
   useEffect(() => {
-    if(isRefresh){
+    if (isRefresh) {
       loadData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -176,7 +171,7 @@ export default function Outbound() {
                 value={query.status}
                 onChange={(e) => handleQueryData("status", e.target.value)}
               >
-                 <option className="placeholder" value="" selected disabled>
+                <option className="placeholder" value="" disabled>
                   Status
                 </option>
                 {operationStatuses.map((item, index) => (

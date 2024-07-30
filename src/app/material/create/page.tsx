@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { addMaterial } from "@/actions/material";
 import { Product } from "@carbon/icons-react";
+import { materialTypes } from "@/utils/constant";
 
 export default function CreateMaterial() {
   const router = useRouter();
@@ -17,8 +18,8 @@ export default function CreateMaterial() {
     max: "",
     unit: "",
     status: "",
-  note: "",
-  expect_storage_locations: ""
+    note: "",
+    expect_storage_locations: "",
   });
 
   const handlerSetFormValues = (val: any, id: string) => {
@@ -32,15 +33,15 @@ export default function CreateMaterial() {
     addMaterial(formValue)
       .then((res) => {
         setFormValues({
-            material_code: "",
-            name: "",
-            material_type: "",
-            min: "",
-            max: "",
-            unit: "",
-            status: "",
+          material_code: "",
+          name: "",
+          material_type: "",
+          min: "",
+          max: "",
+          unit: "",
+          status: "",
           note: "",
-          expect_storage_locations: ""
+          expect_storage_locations: "",
         });
         Toast.show({
           icon: "success",
@@ -81,12 +82,24 @@ export default function CreateMaterial() {
             value={formValue.name}
             setValue={handlerSetFormValues}
           ></CusInput>
-          <CusInput
-            id="material_type"
-            name="Material Type"
-            value={formValue.material_type}
-            setValue={handlerSetFormValues}
-          ></CusInput>
+          <div className="mt-6">
+            <p className="mb-2">Material Type</p>
+            <select
+              value={formValue.material_type}
+              onChange={(e) =>
+                handlerSetFormValues(e.target.value, "material_type")
+              }
+            >
+              <option className="placeholder" value="" disabled>
+                Material Type
+              </option>
+              {materialTypes.map((item, index) => (
+                <option key={index} value={item.value}>
+                  {item.text}
+                </option>
+              ))}
+            </select>
+          </div>
           <CusInput
             id="min"
             name="Min Stock"

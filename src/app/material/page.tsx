@@ -151,8 +151,8 @@ export default function Material() {
                 value={query.type}
                 onChange={(e) => handleQueryData("type", e.target.value)}
               >
-                 <option className="placeholder" value="" selected disabled>
-                  Type
+                <option className="placeholder" value="" disabled>
+                  Material Type
                 </option>
                 {materialTypes.map((item, index) => (
                   <option key={index} value={item.value}>

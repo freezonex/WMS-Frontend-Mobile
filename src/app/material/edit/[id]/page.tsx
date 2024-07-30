@@ -2,11 +2,12 @@
 import CusInput from "@/components/cus-input/cus-input";
 import PageHeader from "@/components/page-header/page-header";
 import { Button, Toast } from "antd-mobile";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { updateMaterial,fetchMaterial } from "@/actions/material";
+import { updateMaterial, fetchMaterial } from "@/actions/material";
 import { IPaginated } from "@/interface/IPaginated";
 import { Product } from "@carbon/icons-react";
+import { materialTypes } from "@/utils/constant";
 
 interface IParams {
   params: {
@@ -23,8 +24,8 @@ export default function EditMaterial({ params }: IParams) {
     max: "",
     unit: "",
     status: "",
-  note: "",
-  expect_storage_locations: ""
+    note: "",
+    expect_storage_locations: "",
   });
 
   useEffect(() => {
@@ -105,6 +106,24 @@ export default function EditMaterial({ params }: IParams) {
             value={formValue.material_type}
             setValue={handlerSetFormValues}
           ></CusInput>
+          <div className="mt-6">
+            <p className="mb-2">Material Type</p>
+            <select
+              value={formValue.material_type}
+              onChange={(e) =>
+                handlerSetFormValues(e.target.value, "material_type")
+              }
+            >
+              <option className="placeholder" value="" disabled>
+                Material Type
+              </option>
+              {materialTypes.map((item, index) => (
+                <option key={index} value={item.value}>
+                  {item.text}
+                </option>
+              ))}
+            </select>
+          </div>
           <CusInput
             id="min"
             name="Min Stock"

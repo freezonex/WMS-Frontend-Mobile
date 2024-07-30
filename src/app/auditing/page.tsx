@@ -148,7 +148,7 @@ export default function Auditing() {
                 value={query.type}
                 onChange={(e) => handleQueryData("type", e.target.value)}
               >
-                <option className="placeholder" value="" selected disabled>
+                <option className="placeholder" value="" disabled>
                   Type
                 </option>
                 {stokingTypes.map((item, index) => (
@@ -163,7 +163,7 @@ export default function Auditing() {
                 value={query.status}
                 onChange={(e) => handleQueryData("status", e.target.value)}
               >
-                 <option className="placeholder" value="" selected disabled>
+                <option className="placeholder" value="" disabled>
                   Status
                 </option>
                 {operationStatuses.map((item, index) => (
