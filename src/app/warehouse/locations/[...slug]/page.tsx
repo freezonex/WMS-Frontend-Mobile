@@ -1,7 +1,13 @@
 "use client";
 
 import PageHeader from "@/components/page-header/page-header";
-import { Button, Dialog, Toast } from "antd-mobile";
+import {
+  Button,
+  Dialog,
+  InfiniteScroll,
+  PullToRefresh,
+  Toast,
+} from "antd-mobile";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IPaginated } from "@/interface/IPaginated";
@@ -13,6 +19,7 @@ import {
   deleteStorageLocation,
   fetchStorageLocationsByWId,
 } from "@/actions/storage";
+import { PageSize } from "@/utils/constant";
 
 interface IParams {
   params: {
@@ -26,24 +33,62 @@ export default function WarehouseLocations({ params }: IParams) {
   const props = JSON.parse(decodeURIComponent(JSON.stringify(params)));
 
   const [datas, setDatas] = useState<any[]>([]);
+  const [pageNum, setPageNum] = useState(0);
+  const [isRefresh, setIsRefresh] = useState(false);
+  const [hasmore, setHasMore] = useState(true);
 
   useEffect(() => {
+    if (isRefresh) {
+      loadData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRefresh]);
+
+  const loadData = async () => {
     const id = props.slug[0];
     const pageObject: IPaginated = {
-      pageNum: 1,
-      pageSize: 10,
+      pageNum: pageNum,
+      pageSize: PageSize,
     };
-    fetchStorageLocationsByWId({ warehouse_id: id }, pageObject).then(
-      (res: any) => {
-        if (res.data) {
-          setDatas(res.data.list);
+    try {
+      const res = (await fetchStorageLocationsByWId(
+        { warehouse_id: id },
+        pageObject
+      )) as any;
+      if (res.data) {
+        if (!res.data.hasNextPage) {
+          setHasMore(false);
+        } else {
+          if (!isRefresh) {
+            setPageNum(pageNum + 1);
+          }
         }
-        console.log(res);
+        if (pageNum <= 1) {
+          setDatas(res.data.list);
+        } else {
+          setDatas((prev) => [...prev, ...res.data.list]);
+        }
+      } else {
+        setDatas([]);
+        setHasMore(false);
       }
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+      if (isRefresh) {
+        setIsRefresh(false);
+      }
+    } catch (e) {
+      if (isRefresh) {
+        setIsRefresh(false);
+      }
+      console.log(e);
+    }
+  };
+  const handleHasMore = async () => {
+    return await loadData();
+  };
+  const handleRefresh = () => {
+    setPageNum(1);
+    setIsRefresh(true);
+  };
   const handleDelete = (id: string) => {
     Dialog.confirm({
       content: "Are you sure to delete?",
@@ -75,65 +120,75 @@ export default function WarehouseLocations({ params }: IParams) {
   };
   return (
     <>
-      <div>
-        <PageHeader
-          title="Warehouse"
-          subTitle="Warehouses for your storage solutions"
-          icon={<IbmDb2Warehouse size={110} color="blue"></IbmDb2Warehouse>}
-        ></PageHeader>
-        <div className="p-4">
-          <div className="flex flex-row justify-between">
-            <div>
-              <p className=" font-normal text-[20px]">All Storage Location</p>
-              <p>
-                All Storage location under:
-                <span className="ml-2">
-                  {`${props.slug[1]} - ${props.slug[2]}`}.
-                </span>
-              </p>
-            </div>
-            <div>
-              <Button color="primary" size="small" onClick={handleAddLocation}>
-                <Add size={24} color="white"></Add>
-              </Button>
+      <PullToRefresh onRefresh={async () => handleRefresh()}>
+        <div>
+          <PageHeader
+            title="Warehouse"
+            subTitle="Warehouses for your storage solutions"
+            icon={<IbmDb2Warehouse size={110} color="blue"></IbmDb2Warehouse>}
+          ></PageHeader>
+          <div className="p-4">
+            <div className="flex flex-row justify-between">
+              <div>
+                <p className=" font-normal text-[20px]">All Storage Location</p>
+                <p>
+                  All Storage location under:
+                  <span className="ml-2">
+                    {`${props.slug[1]} - ${props.slug[2]}`}.
+                  </span>
+                </p>
+              </div>
+              <div>
+                <Button
+                  color="primary"
+                  size="small"
+                  onClick={handleAddLocation}
+                >
+                  <Add size={24} color="white"></Add>
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="ml-4 mr-4">
-          <div className="mb-4">
-            {datas.length > 0 &&
-              datas.map((item: any, index) => {
-                return (
-                  <div key={index} className="mb-4">
-                    <WmsCard
-                      key={index}
-                      title={item.name}
-                      hasDelete={true}
-                      onDelete={() => handleDelete(item.id)}
-                    >
-                      <CardItem
-                        name="Storage Location"
-                        value={item.name}
-                      ></CardItem>
-                      <CardItem
-                        name="Occupied"
-                        value={item.material_name ? "Yes" : "No"}
-                      ></CardItem>
-                      <CardItem
-                        name="Material"
-                        value={item.material_name}
-                      ></CardItem>
-                      <CardItem
-                        name="Quantity"
-                        value={item.quantity}
-                      ></CardItem>
-                    </WmsCard>
-                  </div>
-                );
-              })}
+          <div className="ml-4 mr-4">
+            <div className="mb-4">
+              {datas.length > 0 &&
+                datas.map((item: any, index) => {
+                  return (
+                    <div key={index} className="mb-4">
+                      <WmsCard
+                        key={index}
+                        title={item.name}
+                        hasDelete={true}
+                        onDelete={() => handleDelete(item.id)}
+                      >
+                        <CardItem
+                          name="Storage Location"
+                          value={item.name}
+                        ></CardItem>
+                        <CardItem
+                          name="Occupied"
+                          value={item.material_name ? "Yes" : "No"}
+                        ></CardItem>
+                        <CardItem
+                          name="Material"
+                          value={item.material_name}
+                        ></CardItem>
+                        <CardItem
+                          name="Quantity"
+                          value={item.quantity}
+                        ></CardItem>
+                      </WmsCard>
+                    </div>
+                  );
+                })}
+            </div>
           </div>
+          <InfiniteScroll
+            hasMore={hasmore}
+            loadMore={handleHasMore}
+          ></InfiniteScroll>
         </div>
-      </div>
+      </PullToRefresh>
     </>
   );
 }

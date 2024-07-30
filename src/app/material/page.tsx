@@ -25,11 +25,19 @@ export default function Material() {
   const [datas, setDatas] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageNum, setPageNum] = useState(1);
+  const [isRefresh, setIsRefresh] = useState(false);
+
   const [query, setQuery] = useState({
     type: "",
     keyword: "",
   });
 
+  useEffect(() => {
+    if (isRefresh) {
+      loadData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRefresh]);
   const loadData = async () => {
     const pageParams: IPaginated = {
       pageNum: pageNum,
@@ -52,7 +60,9 @@ export default function Material() {
         if (!res.data.hasNextPage) {
           setHasMore(false);
         } else {
-          setPageNum(pageNum + 1);
+          if (!isRefresh) {
+            setPageNum(pageNum + 1);
+          }
         }
         if (pageNum <= 1) {
           setDatas(res.data.list);
@@ -63,7 +73,13 @@ export default function Material() {
         setDatas([]);
         setHasMore(false);
       }
+      if (isRefresh) {
+        setIsRefresh(false);
+      }
     } catch (e) {
+      if (isRefresh) {
+        setIsRefresh(false);
+      }
       console.log(e);
     }
   };
@@ -106,16 +122,15 @@ export default function Material() {
     }));
   };
   const handleSearch = () => {
-    loadData();
+    handleRefresh();
+  };
+  const handleRefresh = async () => {
+    setPageNum(1);
+    setIsRefresh(true);
   };
   return (
     <>
-      <PullToRefresh
-        onRefresh={async () => {
-          setDatas([]);
-          await handleLoadMore();
-        }}
-      >
+      <PullToRefresh onRefresh={async () => handleRefresh()}>
         <PageHeader
           title="Material"
           subTitle="Input materials details for inventory management"
@@ -136,6 +151,9 @@ export default function Material() {
                 value={query.type}
                 onChange={(e) => handleQueryData("type", e.target.value)}
               >
+                 <option className="placeholder" value="" selected disabled>
+                  Type
+                </option>
                 {materialTypes.map((item, index) => (
                   <option key={index} value={item.value}>
                     {item.text}
@@ -172,6 +190,10 @@ export default function Material() {
                       <CardItem
                         name="Material Name"
                         value={item.name}
+                      ></CardItem>
+                      <CardItem
+                        name="Material Code"
+                        value={item.material_code}
                       ></CardItem>
                       <CardItem
                         name="Material Type"

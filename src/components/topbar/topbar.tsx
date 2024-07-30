@@ -59,7 +59,7 @@ export default function TopBar() {
   ];
 
   const handleRouter = (path: string) => {
-    router.push(`${path}`);
+    router.replace(`${path}`);
     setVisible(false);
   };
   const handleMenuClick = () => {

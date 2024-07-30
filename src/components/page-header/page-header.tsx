@@ -19,6 +19,9 @@ export default function PageHeader({
         style={{
           background: "var(--background-content)",
           color: "var(--foreground-color)",
+          position: "sticky",
+          top: 0,
+          zIndex:100
         }}
       >
         <div>

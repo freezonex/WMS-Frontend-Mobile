@@ -29,15 +29,6 @@ export default function CreateMaterial() {
   };
 
   const handleSave = () => {
-    // const newValidation = {
-    //   nameInvalid: !formValue.name || formValue.name === "",
-    //   warehouseIdInvalid:
-    //     !formValue.warehouse_id || formValue.warehouse_id === "",
-    //   typeInvalid: !formValue.type || formValue.type === "",
-    // };
-
-    // console.log(formValue);
-    // return;
     addMaterial(formValue)
       .then((res) => {
         setFormValues({
@@ -129,6 +120,7 @@ export default function CreateMaterial() {
           <CusInput
             id="expect_storage_locations"
             name="Expect Location"
+            placeholder="e.g. A-01,B-01"
             value={formValue.expect_storage_locations}
             setValue={handlerSetFormValues}
           ></CusInput>

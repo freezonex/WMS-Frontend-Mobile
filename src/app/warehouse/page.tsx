@@ -1,10 +1,6 @@
 "use client";
-import React, { useState } from "react";
-import {
-  InfiniteScroll,
-  PullToRefresh,
-  Toast,
-} from "antd-mobile";
+import React, { useEffect, useState } from "react";
+import { InfiniteScroll, PullToRefresh, Toast } from "antd-mobile";
 
 import WmsCard from "../../components/wms-card/wms-card";
 import { deleteWarehouse, fetchWarehouses } from "@/actions/warehouse";
@@ -26,12 +22,19 @@ export default function Warehouse() {
   const [hasMore, setHasMore] = useState(true);
   const [pageNum, setPageNum] = useState(1);
   const [isRefresh, setIsRefresh] = useState(false);
+
   const [query, setQuery] = useState({
     type: "",
     manager: "",
     keyword: "",
   });
 
+  useEffect(() => {
+    if (isRefresh) {
+      loadData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRefresh]);
   const loadData = async () => {
     console.log("loadrefesh", isRefresh);
     const pageParams: IPaginated = {
@@ -72,6 +75,9 @@ export default function Warehouse() {
         setIsRefresh(false);
       }
     } catch (e) {
+      if (isRefresh) {
+        setIsRefresh(false);
+      }
       console.log(e);
     }
   };
@@ -110,18 +116,15 @@ export default function Warehouse() {
     }));
   };
   const handleSearch = () => {
-    loadData();
+    handleRefresh();
+  };
+  const handleRefresh = async () => {
+    setPageNum(1);
+    setIsRefresh(true);
   };
   return (
     <>
-      <PullToRefresh
-        onRefresh={async () => {
-          setIsRefresh(true);
-          setPageNum(1);
-          await loadData();
-          console.log("pull");
-        }}
-      >
+      <PullToRefresh onRefresh={async () => handleRefresh()}>
         <PageHeader
           title="Warehouse"
           subTitle="List of warehouses for your storage solutions"
@@ -141,6 +144,9 @@ export default function Warehouse() {
                 value={query.type}
                 onChange={(e) => handleQueryData("type", e.target.value)}
               >
+                <option className="placeholder" value="" selected disabled>
+                  Type
+                </option>
                 {warehouseTypes.map((item, index) => (
                   <option key={index} value={item.value}>
                     {item.text}

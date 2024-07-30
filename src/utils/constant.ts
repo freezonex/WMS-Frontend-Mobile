@@ -7,7 +7,7 @@ export const DateTimeFormat = {
 
 export const materialTypes = [
   { text: "", value: "" },
-  { text: "stock material", value: "stock material" }
+  { text: "Stock Material", value: "stock material" },
 ];
 export const operationStatuses = [
   { text: "", value: "" },

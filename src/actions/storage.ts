@@ -5,7 +5,7 @@ export async function fetchSLNameMap(params: object) {
 }
 
 export async function fetchStorageLocationsByWId(body: object, params: object) {
-  return post("/wms/storage-location/get", body, { params });
+  return post("/wms/storage-location/get", body, params);
 }
 
 export async function addStorageLocation(body: object) {

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   PullToRefresh,
   InfiniteScroll,
@@ -31,12 +31,20 @@ export default function Inbound() {
   const [datas, setDatas] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageNum, setPageNum] = useState(1);
+  const [isRefresh, setIsRefresh] = useState(false);
+
   const [query, setQuery] = useState({
     status: "",
     delivery_date: "",
     keyword: "",
   });
 
+  useEffect(() => {
+    if (isRefresh) {
+      loadData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRefresh]);
   const loadData = async () => {
     const pageParams: IPaginated = {
       pageNum: pageNum,
@@ -59,7 +67,9 @@ export default function Inbound() {
         if (!res.data.hasNextPage) {
           setHasMore(false);
         } else {
-          setPageNum(pageNum + 1);
+          if (!isRefresh) {
+            setPageNum(pageNum + 1);
+          }
         }
         if (pageNum <= 1) {
           setDatas(res.data.list);
@@ -70,7 +80,13 @@ export default function Inbound() {
         setDatas([]);
         setHasMore(false);
       }
+      if (isRefresh) {
+        setIsRefresh(false);
+      }
     } catch (e) {
+      if (isRefresh) {
+        setIsRefresh(false);
+      }
       console.log(e);
     }
   };
@@ -135,16 +151,15 @@ export default function Inbound() {
     }));
   };
   const handleSearch = () => {
-    loadData();
+    handleRefresh();
+  };
+  const handleRefresh = async () => {
+    setPageNum(1);
+    setIsRefresh(true);
   };
   return (
     <>
-      <PullToRefresh
-        onRefresh={async () => {
-          setPageNum(1);
-          loadData();
-        }}
-      >
+      <PullToRefresh onRefresh={async () => handleRefresh()}>
         <PageHeader
           title="Inbound"
           subTitle="Log new inventory arrivals quickly"
@@ -163,6 +178,9 @@ export default function Inbound() {
                 value={query.status}
                 onChange={(e) => handleQueryData("status", e.target.value)}
               >
+                 <option className="placeholder" value="" selected disabled>
+                  Status
+                </option>
                 {operationStatuses.map((item, index) => (
                   <option key={index} value={item.value}>
                     {item.text}
@@ -173,6 +191,7 @@ export default function Inbound() {
             <div className="flex-1">
               <CusDatePicker
                 id="delivery_date"
+                placeholder="Deliver Date"
                 wrapperStyle={{ marginTop: 0 }}
                 value={query.delivery_date}
                 setValue={(val, id) => handleQueryData(id, val)}

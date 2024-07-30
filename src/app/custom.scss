@@ -92,6 +92,7 @@ select {
   border: none;
   background: white;
   border-bottom: 1px solid #8d8d8d;
+  color: #333;
   &:focus {
     outline: 2px solid #0f62fe;
     outline-offset: -2px;
@@ -100,6 +101,9 @@ select {
   padding: 2px 16px;
   option {
     border: none;
+    &.placeholder{
+      display: none;
+    }
   }
 }
 
