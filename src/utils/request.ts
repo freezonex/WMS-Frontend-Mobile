@@ -40,8 +40,8 @@ service.interceptors.response.use(
       }
       if (status.status_code === 500) {
         // const msg = res.errorMessage.substring(
-        //   res.errorMessage.indexOf("Exception:"),
-        //   res.errorMessage.indexOf("Exception:")+100
+        //   res.errorMessage.lastIndexOf("Exception:"),
+        //   res.errorMessage.length
         // );
         // return Promise.reject(msg);
       }
