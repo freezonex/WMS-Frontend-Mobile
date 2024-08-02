@@ -34,8 +34,17 @@ service.interceptors.response.use(
     const res = response.data as IResponseResult;
     const status = res.base_resp;
     // console.log("success response");
-    if (status && status.status_code === 401) {
-      exit();
+    if (status) {
+      if (status.status_code === 401) {
+        exit();
+      }
+      if (status.status_code === 500) {
+        // const msg = res.errorMessage.substring(
+        //   res.errorMessage.lastIndexOf("Exception:"),
+        //   res.errorMessage.length
+        // );
+        // return Promise.reject(msg);
+      }
     }
     return res as any;
   },

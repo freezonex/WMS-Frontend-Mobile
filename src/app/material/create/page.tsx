@@ -1,10 +1,13 @@
 "use client";
-import CusInput from "@/app/components/cus-input/cus-input";
-import PageHeader from "@/app/components/page-header/page-header";
+import CusInput from "@/components/cus-input/cus-input";
+import PageHeader from "@/components/page-header/page-header";
 import { Button, Toast } from "antd-mobile";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { addMaterial } from "@/actions/material";
+import { Product } from "@carbon/icons-react";
+import { materialTypes } from "@/utils/constant";
+import { fetchWHNameMap } from "@/actions/warehouse";
 
 export default function CreateMaterial() {
   const router = useRouter();
@@ -16,10 +19,23 @@ export default function CreateMaterial() {
     max: "",
     unit: "",
     status: "",
-  note: "",
-  expect_storage_locations: ""
+    note: "",
+    expect_wh_id: "",
+    expect_storage_locations: "",
   });
+  const [whNameMaps, setWhNameMaps] = useState<any[]>([]);
 
+  useEffect(() => {
+    fetchWHNameMap({ pageNum: 1, pageSize: 999999 })
+      .then((res: any) => {
+        if (res.data) {
+          setWhNameMaps(res.data.list);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to fetch WH name map:", error);
+      });
+  }, []);
   const handlerSetFormValues = (val: any, id: string) => {
     setFormValues((prevValues) => ({
       ...prevValues,
@@ -28,27 +44,19 @@ export default function CreateMaterial() {
   };
 
   const handleSave = () => {
-    // const newValidation = {
-    //   nameInvalid: !formValue.name || formValue.name === "",
-    //   warehouseIdInvalid:
-    //     !formValue.warehouse_id || formValue.warehouse_id === "",
-    //   typeInvalid: !formValue.type || formValue.type === "",
-    // };
-
-    // console.log(formValue);
-    // return;
     addMaterial(formValue)
       .then((res) => {
         setFormValues({
-            material_code: "",
-            name: "",
-            material_type: "",
-            min: "",
-            max: "",
-            unit: "",
-            status: "",
+          material_code: "",
+          name: "",
+          material_type: "",
+          min: "",
+          max: "",
+          unit: "",
+          status: "",
           note: "",
-          expect_storage_locations: ""
+          expect_wh_id: "",
+          expect_storage_locations: "",
         });
         Toast.show({
           icon: "success",
@@ -73,6 +81,7 @@ export default function CreateMaterial() {
         <PageHeader
           title="Material"
           subTitle="Input materials details for inventory management"
+          icon={<Product size={110} color="blue"></Product>}
         ></PageHeader>
         <div className="p-4">
           <p className=" font-normal text-[20px]">Create A Material</p>
@@ -88,12 +97,24 @@ export default function CreateMaterial() {
             value={formValue.name}
             setValue={handlerSetFormValues}
           ></CusInput>
-          <CusInput
-            id="material_type"
-            name="Material Type"
-            value={formValue.material_type}
-            setValue={handlerSetFormValues}
-          ></CusInput>
+          <div className="mt-6">
+            <p className="mb-2">Material Type</p>
+            <select
+              value={formValue.material_type}
+              onChange={(e) =>
+                handlerSetFormValues(e.target.value, "material_type")
+              }
+            >
+              <option className="placeholder" value="" disabled>
+                Material Type
+              </option>
+              {materialTypes.map((item, index) => (
+                <option key={index} value={item.value}>
+                  {item.text}
+                </option>
+              ))}
+            </select>
+          </div>
           <CusInput
             id="min"
             name="Min Stock"
@@ -105,7 +126,7 @@ export default function CreateMaterial() {
             name="Max Stock"
             value={formValue.max}
             setValue={handlerSetFormValues}
-          ></CusInput>{" "}
+          ></CusInput>
           <CusInput
             id="unit"
             name="Unit"
@@ -124,9 +145,28 @@ export default function CreateMaterial() {
             value={formValue.note}
             setValue={handlerSetFormValues}
           ></CusInput>
+          <div className="mt-6">
+            <p className="mb-2">Warehouse</p>
+            <select
+              value={formValue.expect_wh_id}
+              onChange={(e) =>
+                handlerSetFormValues(e.target.value, "expect_wh_id")
+              }
+            >
+              <option className="placeholder" value="" disabled>
+                Please choose
+              </option>
+              {whNameMaps.map((item, index) => (
+                <option key={index} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
           <CusInput
             id="expect_storage_locations"
             name="Expect Location"
+            placeholder="e.g. A-01,B-01"
             value={formValue.expect_storage_locations}
             setValue={handlerSetFormValues}
           ></CusInput>

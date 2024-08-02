@@ -1,8 +1,8 @@
 "use client";
-import React, { useRef, useState } from "react";
-import { Dialog, InfiniteScroll, PullToRefresh, Toast } from "antd-mobile";
-import PageHeader from "../components/page-header/page-header";
-import IconButton from "../components/icon-button/icon-button";
+import React, { useEffect, useRef, useState } from "react";
+import { InfiniteScroll, Input, PullToRefresh, Toast } from "antd-mobile";
+import PageHeader from "../../components/page-header/page-header";
+import IconButton from "../../components/icon-button/icon-button";
 import { IPaginated } from "@/interface/IPaginated";
 import {
   DateTimeFormat,
@@ -10,32 +10,40 @@ import {
   PageSize,
   stokingTypes,
 } from "@/utils/constant";
-import CardItem from "../components/wms-card/card-item";
-import WmsCard from "../components/wms-card/wms-card";
+import CardItem from "../../components/wms-card/card-item";
+import WmsCard from "../../components/wms-card/wms-card";
 import moment from "moment";
 import { deleteStocktaking, fetchStocktaking } from "@/actions/auditing";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import CusSearchBar from "../components/search-bar/cus-searchbar";
+import CusSearchBar from "../../components/search-bar/cus-searchbar";
 import { cusDlg } from "@/utils/common";
+import { InventoryManagement } from "@carbon/icons-react";
 
 export default function Auditing() {
   const router = useRouter();
-  const pageNum = useRef(1);
+  const [pageNum, setPageNum] = useState(1);
   const [datas, setDatas] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
+  const [isRefresh, setIsRefresh] = useState(false);
   const [query, setQuery] = useState({
     type: "",
     status: "",
     keyword: "",
   });
 
+  useEffect(() => {
+    if (isRefresh) {
+      loadData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRefresh]);
   const loadData = async () => {
     const pageParams: IPaginated = {
-      pageNum: pageNum.current,
+      pageNum: pageNum,
       pageSize: PageSize,
     };
-    if (pageNum.current == 1) {
+    if (pageNum == 1) {
       setDatas([]);
       setHasMore(true);
     }
@@ -51,25 +59,34 @@ export default function Auditing() {
       if (res.data) {
         if (!res.data.hasNextPage) {
           setHasMore(false);
+        } else {
+          if (!isRefresh) {
+            setPageNum(pageNum + 1);
+          }
         }
-        if (pageNum.current <= 1) {
+        if (pageNum <= 1) {
           setDatas(res.data.list);
         } else {
-          console.log(res.data.list);
+          // console.log(res.data.list);
           setDatas((prev) => [...prev, ...res.data.list]);
         }
       } else {
         setDatas([]);
         setHasMore(false);
       }
+      if (isRefresh) {
+        setIsRefresh(false);
+      }
     } catch (e) {
+      if (isRefresh) {
+        setIsRefresh(false);
+      }
       console.log(e);
     }
   };
 
   const handleLoadMore = async () => {
-    await loadData();
-    pageNum.current += 1;
+    return await loadData();
   };
 
   const handleDelete = (id: string) => {
@@ -103,19 +120,21 @@ export default function Auditing() {
     }));
   };
   const handleSearch = () => {
-    loadData();
+    handleRefresh();
+  };
+  const handleRefresh = async () => {
+    setPageNum(1);
+    setIsRefresh(true);
   };
   return (
     <>
-      <PullToRefresh
-        onRefresh={async () => {
-          pageNum.current = 1;
-          loadData();
-        }}
-      >
+      <PullToRefresh onRefresh={async () => handleRefresh()}>
         <PageHeader
           title="Auditing"
           subTitle="Verify and adjust inventory accuracy"
+          icon={
+            <InventoryManagement size={110} color="blue"></InventoryManagement>
+          }
         >
           <IconButton
             text="Create Auditing Order"
@@ -124,11 +143,14 @@ export default function Auditing() {
         </PageHeader>
         <div className="p-4">
           <div className="flex flex-row gap-2">
-            <div className="flex-1">
+            <div className="flex-1 relative">
               <select
                 value={query.type}
                 onChange={(e) => handleQueryData("type", e.target.value)}
               >
+                <option className="placeholder" value="" disabled>
+                  Type
+                </option>
                 {stokingTypes.map((item, index) => (
                   <option key={index} value={item.value}>
                     {item.text}
@@ -141,6 +163,9 @@ export default function Auditing() {
                 value={query.status}
                 onChange={(e) => handleQueryData("status", e.target.value)}
               >
+                <option className="placeholder" value="" disabled>
+                  Status
+                </option>
                 {operationStatuses.map((item, index) => (
                   <option key={index} value={item.value}>
                     {item.text}

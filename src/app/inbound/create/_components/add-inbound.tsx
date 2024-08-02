@@ -1,5 +1,5 @@
-import CusDatePicker from "@/app/components/cus-date-picker/cus-date-picker";
-import CusInput from "@/app/components/cus-input/cus-input";
+import CusDatePicker from "@/components/cus-date-picker/cus-date-picker";
+import CusInput from "@/components/cus-input/cus-input";
 import { operationStatuses } from "@/utils/constant";
 import { Button } from "antd-mobile";
 
@@ -48,6 +48,9 @@ export default function AddInboundCard({
           value={formValue.status}
           onChange={(e) => handleSetFormValues(e.target.value, "status")}
         >
+          <option className="placeholder" value="" disabled>
+            Status
+          </option>
           {operationStatuses.map((item, index) => (
             <option key={index} value={item.value}>
               {item.text}
@@ -55,7 +58,7 @@ export default function AddInboundCard({
           ))}
         </select>
       </div>
-      
+
       <div className="mt-6 flex flex-row justify-center gap-4 pb-8">
         <Button color="primary" onClick={onNext}>
           Next

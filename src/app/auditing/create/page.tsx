@@ -1,8 +1,8 @@
 "use client";
-import PageHeader from "@/app/components/page-header/page-header";
+import PageHeader from "@/components/page-header/page-header";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Toast } from "antd-mobile";
+import { ProgressBar, Toast } from "antd-mobile";
 import AddAuditingOrder from "./_components/add-auditing-order";
 import AddAduditingOrderDetail from "./_components/add-auditing-order-detail";
 import {
@@ -10,6 +10,12 @@ import {
   IAuditingCreateVM,
 } from "@/interface/viewmode/auditing";
 import { addStocktakingRecord } from "@/actions/auditing";
+import {
+  CheckmarkOutline,
+  CircleDash,
+  Incomplete,
+  InventoryManagement,
+} from "@carbon/icons-react";
 interface IFormValue {
   id: "";
   source: "";
@@ -117,10 +123,32 @@ export default function CreateAuditing() {
         <PageHeader
           title="Auditing"
           subTitle="Verify and adjust inventory accuracy"
+          icon={
+            <InventoryManagement size={110} color="blue"></InventoryManagement>
+          }
         ></PageHeader>
         <div className="p-4">
           <p className=" font-normal text-[20px]">Create a Auditing Order</p>
-          <div></div>
+          <div className="mt-4 mb-6">
+            <ProgressBar
+              style={{
+                "--track-width": "2px",
+              }}
+              percent={!showNext ? 50 : 100}
+            />
+            <div className="flex flex-row mt-4">
+              <div className="flex-1 flex flex-row items-center">
+                {!showNext && <Incomplete color="blue"></Incomplete>}
+                {showNext && <CheckmarkOutline color="blue"></CheckmarkOutline>}
+                <span className="ml-2">Default</span>
+              </div>
+              <div className="flex-1  flex flex-row items-center">
+                {!showNext && <CircleDash color="blue"></CircleDash>}
+                {showNext && <Incomplete color="blue"></Incomplete>}
+                <span className="ml-2"> Material List </span>
+              </div>
+            </div>
+          </div>
           {!showNext && (
             <AddAuditingOrder
               formValue={formValue}

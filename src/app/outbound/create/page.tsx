@@ -1,12 +1,13 @@
 "use client";
-import PageHeader from "@/app/components/page-header/page-header";
+import PageHeader from "@/components/page-header/page-header";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { IMaterialDetail } from "@/interface/viewmode/inbound";
-import { Toast } from "antd-mobile";
+import { ProgressBar, Toast } from "antd-mobile";
 import AddOutboundCard from "./_components/add-outbound";
 import OutboundNextCard from "./_components/add-material";
 import { addOutboundRecord } from "@/actions/outbound";
+import { Incomplete, CheckmarkOutline, CircleDash, PortOutput } from "@carbon/icons-react";
 interface IFormValue {
   creator: string;
   purchase_order_no: string;
@@ -114,10 +115,30 @@ export default function CreateOutbound() {
         <PageHeader
           title="Outbound"
           subTitle="Process and track inventory dispatches"
+          icon={<PortOutput size={110} color="blue"></PortOutput>}
         ></PageHeader>
         <div className="p-4">
           <p className=" font-normal text-[20px]">Create a Outbound List</p>
-          <div></div>
+          <div className="mt-4 mb-6">
+            <ProgressBar
+              style={{
+                "--track-width": "2px",
+              }}
+              percent={!showNext ? 50 : 100}
+            />
+            <div className="flex flex-row mt-4">
+              <div className="flex-1 flex flex-row items-center">
+                {!showNext && <Incomplete color="blue"></Incomplete>}
+                {showNext && <CheckmarkOutline color="blue"></CheckmarkOutline>}
+                <span className="ml-2">Default</span>
+              </div>
+              <div className="flex-1  flex flex-row items-center">
+                {!showNext && <CircleDash color="blue"></CircleDash>}
+                {showNext && <Incomplete color="blue"></Incomplete>}
+                <span className="ml-2"> Material List </span>
+              </div>
+            </div>
+          </div>
           {!showNext && (
             <AddOutboundCard
               formValue={formValue}

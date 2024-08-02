@@ -1,7 +1,8 @@
 "use client";
 import { fetchInbound } from "@/actions/inbound";
-import PageHeader from "@/app/components/page-header/page-header";
+import PageHeader from "@/components/page-header/page-header";
 import { IPaginated } from "@/interface/IPaginated";
+import { PortInput } from "@carbon/icons-react";
 import { List } from "antd-mobile";
 import { useEffect, useState } from "react";
 
@@ -33,6 +34,7 @@ export default function InboundMaterials({ params }: IParams) {
         <PageHeader
           title="Inbound"
           subTitle="Log new inventory arrivals quickly"
+          icon={<PortInput size={110} color="blue"></PortInput>}
         ></PageHeader>
         <div className="p-4">
           <p className=" font-normal text-[20px]">All Material</p>

@@ -1,18 +1,12 @@
 "use client";
-import React, { useState } from "react";
-import {
-  Button,
-  InfiniteScroll,
-  PullToRefresh,
-  Dialog,
-  Toast,
-} from "antd-mobile";
-import PageHeader from "../components/page-header/page-header";
-import IconButton from "../components/icon-button/icon-button";
+import React, { useEffect, useState } from "react";
+import { Button, InfiniteScroll, PullToRefresh, Toast } from "antd-mobile";
+import PageHeader from "../../components/page-header/page-header";
+import IconButton from "../../components/icon-button/icon-button";
 import { IPaginated } from "@/interface/IPaginated";
 import { DateTimeFormat, operationStatuses, PageSize } from "@/utils/constant";
-import CardItem from "../components/wms-card/card-item";
-import WmsCard from "../components/wms-card/wms-card";
+import CardItem from "../../components/wms-card/card-item";
+import WmsCard from "../../components/wms-card/wms-card";
 import {
   deleteOutbound,
   fetchOutbound,
@@ -21,21 +15,30 @@ import {
 import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import CusDatePicker from "../components/cus-date-picker/cus-date-picker";
-import CusSearchBar from "../components/search-bar/cus-searchbar";
+import CusDatePicker from "../../components/cus-date-picker/cus-date-picker";
+import CusSearchBar from "../../components/search-bar/cus-searchbar";
 import { cusDlg } from "@/utils/common";
+import { PortOutput } from "@carbon/icons-react";
 
 export default function Outbound() {
   const router = useRouter();
   const [datas, setDatas] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageNum, setPageNum] = useState(1);
+  const [isRefresh, setIsRefresh] = useState(false);
 
   const [query, setQuery] = useState({
     status: "",
     delivery_date: "",
     keyword: "",
   });
+
+  useEffect(() => {
+    if (isRefresh) {
+      loadData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRefresh]);
 
   const handleCreate = () => {
     router.push("outbound/create");
@@ -62,7 +65,9 @@ export default function Outbound() {
         if (!res.data.hasNextPage) {
           setHasMore(false);
         } else {
-          setPageNum(pageNum + 1);
+          if (!isRefresh) {
+            setPageNum(pageNum + 1);
+          }
         }
         if (pageNum <= 1) {
           setDatas(res.data.list);
@@ -73,7 +78,13 @@ export default function Outbound() {
         setDatas([]);
         setHasMore(false);
       }
+      if (isRefresh) {
+        setIsRefresh(false);
+      }
     } catch (e) {
+      if (isRefresh) {
+        setIsRefresh(false);
+      }
       console.log(e);
     }
   };
@@ -132,20 +143,20 @@ export default function Outbound() {
     }));
   };
   const handleSearch = () => {
-    loadData();
+    handleRefresh();
   };
 
+  const handleRefresh = async () => {
+    setPageNum(1);
+    setIsRefresh(true);
+  };
   return (
     <>
-      <PullToRefresh
-        onRefresh={async () => {
-          setPageNum(1);
-          loadData();
-        }}
-      >
+      <PullToRefresh onRefresh={async () => handleRefresh()}>
         <PageHeader
           title="Outbound"
           subTitle="Process and track inventory dispatches"
+          icon={<PortOutput size={110} color="blue"></PortOutput>}
         >
           <IconButton
             text="Create a Outbound List"
@@ -155,11 +166,14 @@ export default function Outbound() {
 
         <div className="p-4">
           <div className="flex flex-row justify-between gap-2">
-            <div>
+            <div className="flex-1">
               <select
                 value={query.status}
                 onChange={(e) => handleQueryData("status", e.target.value)}
               >
+                <option className="placeholder" value="" disabled>
+                  Status
+                </option>
                 {operationStatuses.map((item, index) => (
                   <option key={index} value={item.value}>
                     {item.text}
@@ -167,9 +181,10 @@ export default function Outbound() {
                 ))}
               </select>
             </div>
-            <div>
+            <div className="flex-1">
               <CusDatePicker
                 id="delivery_date"
+                placeholder="Delivery Date"
                 wrapperStyle={{ marginTop: 0 }}
                 value={query.delivery_date}
                 setValue={(val, id) => handleQueryData(id, val)}

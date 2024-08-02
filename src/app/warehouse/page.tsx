@@ -1,32 +1,20 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Form,
-  Space,
-  Input,
-  Popup,
-  SearchBar,
-  Card,
-  InfiniteScroll,
-  PullToRefresh,
-  Modal,
-  Toast,
-  Dialog,
-} from "antd-mobile";
+import { InfiniteScroll, PullToRefresh, Toast } from "antd-mobile";
 
-import WmsCard from "../components/wms-card/wms-card";
+import WmsCard from "../../components/wms-card/wms-card";
 import { deleteWarehouse, fetchWarehouses } from "@/actions/warehouse";
-import CardItem from "../components/wms-card/card-item";
-import PageHeader from "../components/page-header/page-header";
-import IconButton from "../components/icon-button/icon-button";
+import CardItem from "../../components/wms-card/card-item";
+import PageHeader from "../../components/page-header/page-header";
+import IconButton from "../../components/icon-button/icon-button";
 import { PageSize, warehouseTypes } from "@/utils/constant";
 import { useRouter } from "next/navigation";
 import { IPaginated } from "@/interface/IPaginated";
 import Link from "next/link";
 import { cusDlg } from "@/utils/common";
-import CusInput from "../components/cus-input/cus-input";
-import CusSearchBar from "../components/search-bar/cus-searchbar";
+import CusInput from "../../components/cus-input/cus-input";
+import CusSearchBar from "../../components/search-bar/cus-searchbar";
+import { IbmDb2Warehouse } from "@carbon/icons-react";
 
 export default function Warehouse() {
   const router = useRouter();
@@ -34,14 +22,20 @@ export default function Warehouse() {
   const [hasMore, setHasMore] = useState(true);
   const [pageNum, setPageNum] = useState(1);
   const [isRefresh, setIsRefresh] = useState(false);
+
   const [query, setQuery] = useState({
     type: "",
     manager: "",
     keyword: "",
   });
 
+  useEffect(() => {
+    if (isRefresh) {
+      loadData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRefresh]);
   const loadData = async () => {
-    console.log("loadrefesh", isRefresh);
     const pageParams: IPaginated = {
       pageNum: pageNum,
       pageSize: PageSize,
@@ -80,11 +74,13 @@ export default function Warehouse() {
         setIsRefresh(false);
       }
     } catch (e) {
+      if (isRefresh) {
+        setIsRefresh(false);
+      }
       console.log(e);
     }
   };
   const handleLoadMore = async () => {
-    console.log("loadmore");
     return await loadData();
   };
   const handleEdit = (id: string) => {
@@ -118,21 +114,19 @@ export default function Warehouse() {
     }));
   };
   const handleSearch = () => {
-    loadData();
+    handleRefresh();
+  };
+  const handleRefresh = async () => {
+    setPageNum(1);
+    setIsRefresh(true);
   };
   return (
     <>
-      <PullToRefresh
-        onRefresh={async () => {
-          setIsRefresh(true);
-          setPageNum(1);
-          await loadData();
-          console.log("pull");
-        }}
-      >
+      <PullToRefresh onRefresh={async () => handleRefresh()}>
         <PageHeader
           title="Warehouse"
           subTitle="List of warehouses for your storage solutions"
+          icon={<IbmDb2Warehouse size={110} color="blue"></IbmDb2Warehouse>}
         >
           <IconButton
             text="Create Warehouse"
@@ -148,6 +142,9 @@ export default function Warehouse() {
                 value={query.type}
                 onChange={(e) => handleQueryData("type", e.target.value)}
               >
+                <option className="placeholder" value="" disabled>
+                  Type
+                </option>
                 {warehouseTypes.map((item, index) => (
                   <option key={index} value={item.value}>
                     {item.text}

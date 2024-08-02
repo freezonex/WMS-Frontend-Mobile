@@ -1,23 +1,43 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { SearchBar, PullToRefresh, InfiniteScroll,  Dialog,Toast } from "antd-mobile";
+import {
+  SearchBar,
+  PullToRefresh,
+  InfiniteScroll,
+  Dialog,
+  Toast,
+} from "antd-mobile";
 
-import WmsCard from "../components/wms-card/wms-card";
-import { fetchMaterial,deleteMaterial } from "@/actions/material";
+import WmsCard from "../../components/wms-card/wms-card";
+import { fetchMaterial, deleteMaterial } from "@/actions/material";
 import { IPaginated } from "@/interface/IPaginated";
-import CardItem from "../components/wms-card/card-item";
-import PageHeader from "../components/page-header/page-header";
-import IconButton from "../components/icon-button/icon-button";
-import { PageSize } from "@/utils/constant";
+import CardItem from "../../components/wms-card/card-item";
+import PageHeader from "../../components/page-header/page-header";
+import IconButton from "../../components/icon-button/icon-button";
+import { materialTypes, PageSize } from "@/utils/constant";
 import { useRouter } from "next/navigation";
-
+import { Product } from "@carbon/icons-react";
+import CusInput from "@/components/cus-input/cus-input";
+import CusSearchBar from "@/components/search-bar/cus-searchbar";
 
 export default function Material() {
   const router = useRouter();
   const [datas, setDatas] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageNum, setPageNum] = useState(1);
+  const [isRefresh, setIsRefresh] = useState(false);
 
+  const [query, setQuery] = useState({
+    type: "",
+    keyword: "",
+  });
+
+  useEffect(() => {
+    if (isRefresh) {
+      loadData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRefresh]);
   const loadData = async () => {
     const pageParams: IPaginated = {
       pageNum: pageNum,
@@ -28,12 +48,21 @@ export default function Material() {
       setHasMore(true);
     }
     try {
-      const res = (await fetchMaterial({}, pageParams)) as any;
+      let bodyParams = {} as any;
+      if (query.type) {
+        bodyParams.material_type = query.type;
+      }
+      if (query.keyword) {
+        bodyParams.material_code = query.keyword;
+      }
+      const res = (await fetchMaterial(bodyParams, pageParams)) as any;
       if (res.data) {
         if (!res.data.hasNextPage) {
           setHasMore(false);
         } else {
-          setPageNum(pageNum + 1);
+          if (!isRefresh) {
+            setPageNum(pageNum + 1);
+          }
         }
         if (pageNum <= 1) {
           setDatas(res.data.list);
@@ -44,7 +73,13 @@ export default function Material() {
         setDatas([]);
         setHasMore(false);
       }
+      if (isRefresh) {
+        setIsRefresh(false);
+      }
     } catch (e) {
+      if (isRefresh) {
+        setIsRefresh(false);
+      }
       console.log(e);
     }
   };
@@ -80,45 +115,61 @@ export default function Material() {
         });
       });
   };
-
+  const handleQueryData = (field: string, val: string) => {
+    setQuery((prev) => ({
+      ...prev,
+      [field]: val,
+    }));
+  };
+  const handleSearch = () => {
+    handleRefresh();
+  };
+  const handleRefresh = async () => {
+    setPageNum(1);
+    setIsRefresh(true);
+  };
   return (
     <>
-      <PullToRefresh
-        onRefresh={async () => {
-          setDatas([]);
-          pageNum.current = 1;
-          await handleLoadMore();
-        }}
-      >
+      <PullToRefresh onRefresh={async () => handleRefresh()}>
         <PageHeader
           title="Material"
           subTitle="Input materials details for inventory management"
+          icon={<Product size={110} color="blue"></Product>}
         >
-          <IconButton text="Create Material" onClick={() => {
+          <IconButton
+            text="Create Material"
+            onClick={() => {
               router.push("/material/create");
-            }}></IconButton>
+            }}
+          ></IconButton>
         </PageHeader>
 
         <div className="p-4">
-          <div className="flex flex-row justify-between">
-            <select className="w-[50%] ml-2" onChange={() => {}}>
-              {/* <option value="Manager" disabled selected style={{ display: "none" }}>
-            Manager
-          </option> */}
-              <option value="test1">Material Type</option>
-              <option value="test2">test2</option>
-            </select>
+          <div className="flex flex-row gap-2">
+            <div className="flex-1">
+              <select
+                value={query.type}
+                onChange={(e) => handleQueryData("type", e.target.value)}
+              >
+                <option className="placeholder" value="" disabled>
+                  Material Type
+                </option>
+                {materialTypes.map((item, index) => (
+                  <option key={index} value={item.value}>
+                    {item.text}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex-1"></div>
           </div>
-          <SearchBar
-            className="mt-4"
-            placeholder="Material Code | Material Name"
-            style={{
-              "--border-radius": "100px",
-              "--background": "#ffffff",
-              "--height": "32px",
-              "--padding-left": "12px",
-            }}
-          />
+          <CusSearchBar
+            value={query.keyword}
+            placeholder="Material Code"
+            onChange={(val) => handleQueryData("keyword", val)}
+            onSearch={(val) => handleQueryData("keyword", val)}
+            onBtnClick={handleSearch}
+          ></CusSearchBar>
         </div>
         <div className="ml-4 mr-4">
           <div className="mb-4">
@@ -139,6 +190,10 @@ export default function Material() {
                       <CardItem
                         name="Material Name"
                         value={item.name}
+                      ></CardItem>
+                      <CardItem
+                        name="Material Code"
+                        value={item.material_code}
                       ></CardItem>
                       <CardItem
                         name="Material Type"

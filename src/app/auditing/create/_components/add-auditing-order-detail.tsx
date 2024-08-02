@@ -1,8 +1,8 @@
 import { fetchMaterial } from "@/actions/material";
 import { fetchWHNameMap, fetchWHSLNameMap } from "@/actions/warehouse";
-import CusInput from "@/app/components/cus-input/cus-input";
-import CardItem from "@/app/components/wms-card/card-item";
-import WmsCard from "@/app/components/wms-card/wms-card";
+import CusInput from "@/components/cus-input/cus-input";
+import CardItem from "@/components/wms-card/card-item";
+import WmsCard from "@/components/wms-card/wms-card";
 import {
   IAuditingMaterial,
   IAuditingCreateVM,
@@ -208,7 +208,11 @@ export default function AddAduditingOrderDetail({ onBack, onSave }: IProps) {
                   >
                     {data.materials.map((item: any, i: number) => {
                       return (
-                        <div className="mb-4" key={i}>
+                        <div
+                          className="mb-4"
+                          style={{ color: "var(--foreground-color)" }}
+                          key={i}
+                        >
                           <WmsCard title={item.material_name}>
                             <CardItem name="Specifition" value="Default">
                               <DataItem>

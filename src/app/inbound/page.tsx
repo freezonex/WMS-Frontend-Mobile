@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   PullToRefresh,
   InfiniteScroll,
@@ -7,35 +7,44 @@ import {
   Toast,
   Button,
 } from "antd-mobile";
-import PageHeader from "../components/page-header/page-header";
+import PageHeader from "../../components/page-header/page-header";
 import { IPaginated } from "@/interface/IPaginated";
 import { DateTimeFormat, operationStatuses, PageSize } from "@/utils/constant";
-import WmsCard from "../components/wms-card/wms-card";
-import CardItem from "../components/wms-card/card-item";
+import WmsCard from "../../components/wms-card/wms-card";
+import CardItem from "../../components/wms-card/card-item";
 import {
   deleteInbound,
   fetchInbound,
   updateInboundRecord,
 } from "@/actions/inbound";
 import moment from "moment";
-import IconButton from "../components/icon-button/icon-button";
+import IconButton from "../../components/icon-button/icon-button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import CusDatePicker from "../components/cus-date-picker/cus-date-picker";
-import CusSearchBar from "../components/search-bar/cus-searchbar";
+import CusDatePicker from "../../components/cus-date-picker/cus-date-picker";
+import CusSearchBar from "../../components/search-bar/cus-searchbar";
 import { cusDlg } from "@/utils/common";
+import { PortInput } from "@carbon/icons-react";
 
 export default function Inbound() {
   const router = useRouter();
   const [datas, setDatas] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageNum, setPageNum] = useState(1);
+  const [isRefresh, setIsRefresh] = useState(false);
+
   const [query, setQuery] = useState({
     status: "",
     delivery_date: "",
     keyword: "",
   });
 
+  useEffect(() => {
+    if (isRefresh) {
+      loadData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRefresh]);
   const loadData = async () => {
     const pageParams: IPaginated = {
       pageNum: pageNum,
@@ -58,7 +67,9 @@ export default function Inbound() {
         if (!res.data.hasNextPage) {
           setHasMore(false);
         } else {
-          setPageNum(pageNum + 1);
+          if (!isRefresh) {
+            setPageNum(pageNum + 1);
+          }
         }
         if (pageNum <= 1) {
           setDatas(res.data.list);
@@ -69,7 +80,13 @@ export default function Inbound() {
         setDatas([]);
         setHasMore(false);
       }
+      if (isRefresh) {
+        setIsRefresh(false);
+      }
     } catch (e) {
+      if (isRefresh) {
+        setIsRefresh(false);
+      }
       console.log(e);
     }
   };
@@ -134,19 +151,19 @@ export default function Inbound() {
     }));
   };
   const handleSearch = () => {
-    loadData();
+    handleRefresh();
+  };
+  const handleRefresh = async () => {
+    setPageNum(1);
+    setIsRefresh(true);
   };
   return (
     <>
-      <PullToRefresh
-        onRefresh={async () => {
-          setPageNum(1);
-          loadData();
-        }}
-      >
+      <PullToRefresh onRefresh={async () => handleRefresh()}>
         <PageHeader
           title="Inbound"
           subTitle="Log new inventory arrivals quickly"
+          icon={<PortInput size={110} color="blue"></PortInput>}
         >
           <IconButton
             text="Create Inbound List"
@@ -156,11 +173,14 @@ export default function Inbound() {
 
         <div className="p-4">
           <div className="flex flex-row justify-between gap-2">
-            <div>
+            <div className="flex-1">
               <select
                 value={query.status}
                 onChange={(e) => handleQueryData("status", e.target.value)}
               >
+                <option className="placeholder" value="" disabled>
+                  Status
+                </option>
                 {operationStatuses.map((item, index) => (
                   <option key={index} value={item.value}>
                     {item.text}
@@ -168,9 +188,10 @@ export default function Inbound() {
                 ))}
               </select>
             </div>
-            <div>
+            <div className="flex-1">
               <CusDatePicker
                 id="delivery_date"
+                placeholder="Deliver Date"
                 wrapperStyle={{ marginTop: 0 }}
                 value={query.delivery_date}
                 setValue={(val, id) => handleQueryData(id, val)}
