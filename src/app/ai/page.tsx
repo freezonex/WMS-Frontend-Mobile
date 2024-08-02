@@ -7,6 +7,7 @@ import { getAIAnswers } from "@/actions/ai";
 export default function Material() {
   const [qustionList, setQustionList] = useState<any[]>([]);
   const [question, setQuestion] = useState("");
+
   const askQustion = () => {
     getAIAnswers({
       question: question,
@@ -27,18 +28,20 @@ export default function Material() {
   return (
     <>
       <div className="ai">
-        {qustionList.map((item, index) => (
-          <div className="content" key={index}>
-            <Card
-              headerStyle={{
-                color: "gray",
-              }}
-              title={`Q: ${item.question}`}
-            >
-              {item.answer}
-            </Card>
-          </div>
-        ))}
+        <div className="answer">
+          {qustionList.map((item, index) => (
+            <div className="content" key={index}>
+              <Card
+                headerStyle={{
+                  color: "gray",
+                }}
+                title={`Q: ${item.question}`}
+              >
+                {item.answer}
+              </Card>
+            </div>
+          ))}
+        </div>
         <div className="footer">
           <Form layout="horizontal">
             <Form.Item

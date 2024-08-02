@@ -1,5 +1,5 @@
 :root:root {
-  touch-action:pan-y;
+  touch-action: pan-y;
 
   [class^="adm"] {
     border-radius: 0;
@@ -101,7 +101,7 @@ select {
   padding: 2px 16px;
   option {
     border: none;
-    &.placeholder{
+    &.placeholder {
       display: none;
     }
   }
@@ -125,20 +125,25 @@ select {
   overflow: auto;
 }
 
-
-.ai>.content {  
-  min-height: 100%;
-  box-sizing: border-box;
-  margin:10px;
-}  
-
-.ai>.footer {  
-  position: fixed; /* 固定定位 */  
-  bottom: 0; /* 紧贴视窗底部 */  
-  width: 100%; /* 宽度占满整个屏幕 */  
-  height: 60px; /* 设定固定的高度 */  
-  background-color: #333; /* 背景色，可根据需要调整 */  
-  color: white; /* 文本颜色 */  
-  text-align: center; /* 文本居中显示 */  
-  line-height: 60px; /* 垂直居中文本 */  
+.ai {
+  .answer {
+    margin-bottom: 60px;
+    overflow-y: auto;
+    padding: 10px;
+  }
+  .content {
+    min-height: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px !important;
+  }
+  .footer {
+    position: fixed; /* 固定定位 */
+    bottom: 0; /* 紧贴视窗底部 */
+    width: 100%; /* 宽度占满整个屏幕 */
+    height: 60px; /* 设定固定的高度 */
+    background-color: #333; /* 背景色，可根据需要调整 */
+    color: white; /* 文本颜色 */
+    text-align: center; /* 文本居中显示 */
+    line-height: 60px; /* 垂直居中文本 */
+  }
 }
