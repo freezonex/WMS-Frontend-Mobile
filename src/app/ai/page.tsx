@@ -1,32 +1,28 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  Form,
-  Input,
-  Card
-} from "antd-mobile";
+import React, { useState } from "react";
+import { Form, Input, Card } from "antd-mobile";
 
-import { fetchAIAnswer } from "@/actions/supos";
+import { getAIAnswers } from "@/actions/ai";
 
 export default function Material() {
-  const [qustionList, setQustionList] = useState([{ 'qustion': 'q1111', 'answer': 'a1111' }]);
-  const [qustion, setQustion] = useState('');
-
-  useEffect(() => {
-    console.warn(qustion);
-  });
+  const [qustionList, setQustionList] = useState<any[]>([]);
+  const [question, setQuestion] = useState("");
   const askQustion = () => {
-    qustionList.push({ 'qustion': qustion, 'answer': qustion + 'aaaaa' });
-    // fetchAIAnswer(qustion)
-    //   .then((res: any) => {
-    //     console.log(res);
-    //   })
-    //   .catch((e) => {
-    //     Toast.show({
-    //       icon: "fail",
-    //       content: e,
-    //     });
-    //   });
+    getAIAnswers({
+      question: question,
+    }).then((res: any) => {
+      let answer = res.answer;
+      if (res.error) {
+        answer = "The system is busy";
+      }
+      setQustionList([
+        ...qustionList,
+        {
+          question: question,
+          answer: answer,
+        },
+      ]);
+    });
   };
   return (
     <>
@@ -35,28 +31,30 @@ export default function Material() {
           <div className="content" key={index}>
             <Card
               headerStyle={{
-                color: "gray"
+                color: "gray",
               }}
-              title={item.qustion}
+              title={`Q: ${item.question}`}
             >
               {item.answer}
             </Card>
-
           </div>
         ))}
         <div className="footer">
-          <Form layout='horizontal'>
+          <Form layout="horizontal">
             <Form.Item
               extra={
                 <div>
-                  <a onClick={askQustion} >Send</a>
+                  <a onClick={askQustion}>Send</a>
                 </div>
               }
             >
-              <Input placeholder='Ask me a question' value={qustion}
-                onChange={val => {
-                  setQustion(val)
-                }} />
+              <Input
+                placeholder="Ask me a question"
+                value={question}
+                onChange={(val) => {
+                  setQuestion(val);
+                }}
+              />
             </Form.Item>
           </Form>
         </div>
