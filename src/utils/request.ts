@@ -22,6 +22,9 @@ service.interceptors.request.use(
     // if (access_token && !config.headers["X-Custom-Token"]) {
     //   config.headers["X-Custom-Token"] = `${access_token}`;
     // }
+    if (config.url.includes('/ai')) {
+      config.baseURL = '/ai';
+    }
     return config;
   },
   (error) => {

@@ -26,6 +26,10 @@ const nextConfig = {
         source: "/webapi/:slug*",
         destination: destination,
       },
+      {
+        source: '/ai/:slug*',
+        destination: 'http://supcononenorth.fortiddns.com:30078/query',
+      },
     ];
   },
 };
