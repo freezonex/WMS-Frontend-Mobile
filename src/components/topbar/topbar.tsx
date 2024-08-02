@@ -8,6 +8,7 @@ import {
   InventoryManagement,
   PortInput,
   PortOutput,
+  AiLaunch,
   User,
 } from "@carbon/icons-react";
 import { useRouter, usePathname } from "next/navigation";
@@ -56,6 +57,13 @@ export default function TopBar() {
       path: "/auditing",
       bottomDivider: true,
     },
+    {
+      name: "ai",
+      title: "AI Assistant",
+      icon: <AiLaunch />,
+      path: "/ai",
+      bottomDivider: true,
+    }
   ];
 
   const handleRouter = (path: string) => {
