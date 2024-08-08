@@ -1,4 +1,4 @@
-import { fetchMaterialWithFilters } from "@/actions/material";
+import { fetchMaterialWithFilters,fetchMaterialForOutbound } from "@/actions/material";
 import { fetchWHNameMap } from "@/actions/warehouse";
 import CusInput from "@/components/cus-input/cus-input";
 import CardItem from "@/components/wms-card/card-item";
@@ -67,7 +67,7 @@ export default function OutboundNextCard({ onBack, onSave }: IProps) {
   };
   const handleBlur = async (value: string, rowId: number) => {
     console.log(value, rowId);
-    const materialData = (await fetchMaterialWithFilters({
+    const materialData = (await fetchMaterialForOutbound({
       material_code: value,
     })) as any;
     if (

@@ -4,6 +4,10 @@ export async function fetchMaterial(body: object, params: object) {
   return post("/wms/material/get", body, params);
 }
 
+export async function fetchMaterialForOutbound(body: object) {
+  return post("/wms/material/getMaterialForOutbound", body);
+}
+
 export async function fetchMaterialWithFilters(body: object) {
   return post("/wms/material/get", body);
 }
