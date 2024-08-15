@@ -33,6 +33,11 @@ export default function Auditing() {
   });
 
   useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  
+  useEffect(() => {
     if (isRefresh) {
       loadData();
     }
@@ -101,7 +106,7 @@ export default function Auditing() {
           icon: "success",
           content: "Successfully",
         });
-        loadData();
+        handleRefresh();
       })
       .catch((e) => {
         Toast.show({

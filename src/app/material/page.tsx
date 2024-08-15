@@ -33,6 +33,11 @@ export default function Material() {
   });
 
   useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  
+  useEffect(() => {
     if (isRefresh) {
       loadData();
     }
@@ -106,7 +111,7 @@ export default function Material() {
           icon: "success",
           content: "Successfully",
         });
-        loadData();
+        handleRefresh();
       })
       .catch((e) => {
         Toast.show({

@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { fetchWarehouses, updateWarehouse } from "@/actions/warehouse";
 import { IPaginated } from "@/interface/IPaginated";
 import { IbmDb2Warehouse } from "@carbon/icons-react";
+import { warehouseTypes } from "@/utils/constant";
 
 interface IParams {
   params: {
@@ -102,12 +103,22 @@ export default function EditWarehouse({ params }: IParams) {
             value={formValue.warehouse_id}
             setValue={handleSetFormValues}
           ></CusInput>
-          <CusInput
-            id="type"
-            name="Type"
-            value={formValue.type}
-            setValue={handleSetFormValues}
-          ></CusInput>
+          <div className="mt-6">
+            <p className="mb-2">Type</p>
+            <select
+              value={formValue.type}
+              onChange={(e) => handleSetFormValues(e.target.value, "type")}
+            >
+              <option className="placeholder" value="" disabled>
+                Warehouse Type
+              </option>
+              {warehouseTypes.map((item, index) => (
+                <option key={index} value={item.value}>
+                  {item.text}
+                </option>
+              ))}
+            </select>
+          </div>
           <CusInput
             id="manager"
             name="Manager"

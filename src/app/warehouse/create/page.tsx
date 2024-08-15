@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AddWarehouses } from "@/actions/warehouse";
 import { IbmDb2Warehouse } from "@carbon/icons-react";
+import { warehouseTypes } from "@/utils/constant";
 
 export default function CreateWarehouse() {
   const router = useRouter();
@@ -80,12 +81,22 @@ export default function CreateWarehouse() {
             value={formValue.warehouse_id}
             setValue={handleSetFormValues}
           ></CusInput>
-          <CusInput
-            id="type"
-            name="Type"
-            value={formValue.type}
-            setValue={handleSetFormValues}
-          ></CusInput>
+          <div className="mt-6">
+            <p className="mb-2">Type</p>
+            <select
+              value={formValue.type}
+              onChange={(e) => handleSetFormValues(e.target.value, "type")}
+            >
+              <option className="placeholder" value="" disabled>
+                Warehouse Type
+              </option>
+              {warehouseTypes.map((item, index) => (
+                <option key={index} value={item.value}>
+                  {item.text}
+                </option>
+              ))}
+            </select>
+          </div>
           <CusInput
             id="manager"
             name="Manager"
